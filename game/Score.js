@@ -1,3 +1,5 @@
+/** @types {import("../typing/phaser")} */
+
 class Score {
     constructor() {
         this._laserScore = 0;

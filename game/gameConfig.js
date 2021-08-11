@@ -1,3 +1,5 @@
+/** @types {import("../typing/phaser")} */
+
 const config = {
     type: Phaser.AUTO,
     width: 600,

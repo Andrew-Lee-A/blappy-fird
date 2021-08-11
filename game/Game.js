@@ -1,3 +1,4 @@
+/** @types {import("../typing/phaser")} */
 class Game extends Phaser.Scene {
     constructor() {
         super({key: 'Game'});

@@ -1,3 +1,5 @@
+/** @types {import("../typing/phaser")} */
+
 class MainMenu extends Phaser.Scene {
     constructor() {
         super({key: 'MainMenu'});

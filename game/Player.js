@@ -1,3 +1,5 @@
+/** @types {import("../typing/phaser")} */
+
 class Player {
     constructor() {
         this._numCoins = 0;
