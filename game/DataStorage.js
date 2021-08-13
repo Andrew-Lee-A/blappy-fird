@@ -1,4 +1,4 @@
-/** @types {import("../typing/phaser")} */
+/** @type {import("../typing/phaser")} */
 
 class DataStorage {
     
