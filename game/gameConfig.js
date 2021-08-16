@@ -1,5 +1,7 @@
 /** @type {import("../typing/phaser")} */
 
+const gameState = {}; // gameState object for other scenes...
+
 const config = {
     type: Phaser.AUTO,
     width: 600,
