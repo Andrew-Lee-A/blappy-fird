@@ -5,8 +5,19 @@ const config = {
     width: 600,
     height: 800,
     backgroundColor: '#6C3FDD',
-    scene: [MainMenu, Game, ShopMenu],
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0},
+            debug: false
+
+        }
+    },
+    scene: [Game, MainMenu, ShopMenu],
 };
+
+var player;
+var buff;
 
 const game = new Phaser.Game(config);
 
