@@ -17,21 +17,21 @@ function updateScore(gameType, score) {
             if (Score._laserScore < score) {
                 Score._laserScore = score;
                 // value of score is binding to the local storage key 'laserScore'
-                localStorage.setItem('laserScore',score)
+                localStorage.setItem('laserScore', score)
             }
             break;
 
         case 'classic':
             if (Score._classicScore < score) {
                 Score._classicScore = score;
-                localStorage.setItem('classicScore',score)
+                localStorage.setItem('classicScore', score)
             }
             break;
 
         case 'gun':
             if (Score._gunScore < score) {
                 Score._gunScore = score;
-                localStorage.setItem('gunScore',score)
+                localStorage.setItem('gunScore', score)
             }
             break;
         default:
