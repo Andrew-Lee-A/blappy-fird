@@ -1,0 +1,57 @@
+html {
+  background-color: #171d22;
+  color: white;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.main-heading {
+  position: relative;
+  font-size: 6rem;
+  text-align: center;
+}
+
+.sub-heading {
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.heading-description {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.call-to-action {
+  display: flex;
+  background-color: #47e482;
+  color: #171d22;
+  text-decoration: none;
+  margin: auto;
+  font-size: 4.5rem;
+  width: 25rem;
+  height: 8rem;
+  border-radius: 5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+  transition: color 0.5s;
+}
+
+.call-to-action:hover {
+  color: white;
+}
+
+.game-images {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 5%;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-images img {
+  flex: 1, 0, auto;
+  width: 25rem;
+  height: 25rem;
+  margin: 4rem;
+}
