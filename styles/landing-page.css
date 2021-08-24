@@ -1,5 +1,12 @@
+/* removing defaults boilerplate...*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html {
-  background-color: #171d22;
+  background-color: #292d31;
   color: white;
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
@@ -9,16 +16,21 @@ html {
   position: relative;
   font-size: 6rem;
   text-align: center;
+  animation: main-load 500ms ease-in;
 }
 
 .sub-heading {
   font-size: 2.5rem;
   text-align: center;
+  margin-top: 4rem;
+  animation: main-load 500ms ease-in;
 }
 
 .heading-description {
   font-size: 1.5rem;
   text-align: center;
+  margin-top: 2rem;
+  animation: main-load 500ms ease-in;
 }
 
 .call-to-action {
@@ -34,7 +46,8 @@ html {
   align-items: center;
   justify-content: center;
   margin-top: 5%;
-  transition: color 0.5s;
+  transition: color 350ms ease-in;
+  animation: play-load 1.5s ease-in;
 }
 
 .call-to-action:hover {
@@ -47,6 +60,7 @@ html {
   margin-top: 5%;
   align-items: center;
   justify-content: center;
+  animation: image-collection-load 1s ease-in;
 }
 
 .game-images img {
@@ -54,4 +68,53 @@ html {
   width: 25rem;
   height: 25rem;
   margin: 4rem;
+  border-radius: 1rem;
+}
+
+::-webkit-scrollbar {
+  border-radius: 3rem;
+  width: 0.85rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #727374;
+  border-radius: 1rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #515457;
+}
+
+@keyframes main-load {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes image-collection-load {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes play-load {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
