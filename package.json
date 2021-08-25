@@ -1,0 +1,23 @@
+{
+  "name": "blappy-fird",
+  "version": "1.0.0",
+  "description": "SDP group project",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhysvr/blappy-fird.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rhysvr/blappy-fird/issues"
+  },
+  "homepage": "https://github.com/rhysvr/blappy-fird#readme",
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}

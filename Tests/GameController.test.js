@@ -1,0 +1,1 @@
+const GameController = require('../game/Controller/GameController');
