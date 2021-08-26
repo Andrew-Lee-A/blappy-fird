@@ -13,16 +13,20 @@ html {
 }
 
 .main-heading {
-  position: relative;
+  width: 60%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 6rem;
   text-align: center;
-  animation: main-load 500ms ease-in;
+  margin: auto;
 }
 
 .sub-heading {
   font-size: 2.5rem;
   text-align: center;
-  margin-top: 4rem;
+  margin-top: 5%;
   animation: main-load 500ms ease-in;
 }
 
@@ -34,6 +38,7 @@ html {
 }
 
 .call-to-action {
+  position: relative;
   display: flex;
   background-color: #47e482;
   color: #171d22;
@@ -48,6 +53,10 @@ html {
   margin-top: 5%;
   transition: color 350ms ease-in;
   animation: play-load 1.5s ease-in;
+}
+
+.call-to-action a {
+  z-index: 5;
 }
 
 .call-to-action:hover {
