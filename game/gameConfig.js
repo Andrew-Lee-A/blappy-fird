@@ -5,7 +5,7 @@ const config = {
   width: 600,
   height: 800,
   backgroundColor: "#6C3FDD",
-  scene: [Game],
+  scene: [GameOver, Game],
   pixelArt: true,
   physics: {
     default: "arcade",
