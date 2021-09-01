@@ -7,9 +7,15 @@ class Game extends Phaser.Scene {
   preload() {
     this.load.image("cat", "assests/images/player-spriteS.png");
     this.load.image("pipe", "assests/images/default-pipe-sprite.png");
+    this.load.spritesheet("heart", "assests/images/heart-container-sheet.png", {
+      frameWidth: 28,
+      frameHeight: 21,
+    });
   }
 
   create() {
+    const NUM_HEARTS = 3;
+
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
@@ -21,6 +27,10 @@ class Game extends Phaser.Scene {
       this.placePipes();
     }
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
+
+    // add hearts
+    const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
+    this.setHearts(2, heartsArray); // test line
   }
 
   update() {
@@ -89,5 +99,28 @@ class Game extends Phaser.Scene {
   }
   die() {
     this.scene.start("Game");
+  }
+
+  initializeHearts(numHearts, rightPadding, spacing) {
+    const heartsArray = [];
+    for(let i = 0; i < numHearts; i++) {
+      if(i == 0) {
+        heartsArray[i] = this.add.sprite((config.width - rightPadding), 30, 'heart');
+      } else {
+        heartsArray[i] = this.add.sprite((config.width - i * spacing) - rightPadding, 30, 'heart');
+      }
+    }
+
+    return heartsArray;
+  }
+
+  setHearts(activeHearts, heartsArray) {
+    for(let i = heartsArray.length - 1; i >= 0; i--) {
+      if(i >= activeHearts) {
+        heartsArray[i].setFrame(1);
+      } else {
+        heartsArray[i].setFrame(0);
+      }
+    }
   }
 }
