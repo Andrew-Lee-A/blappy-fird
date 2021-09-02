@@ -35,11 +35,12 @@ class Game extends Phaser.Scene {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
       this.placePipes();
     }
+    // pipe speed according to player
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
 
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
-    this.setHearts(2, heartsArray); // test line
+    this.setHearts(3, heartsArray); // test line
   }
 
   update() {
