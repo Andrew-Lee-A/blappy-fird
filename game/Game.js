@@ -18,8 +18,8 @@ class Game extends Phaser.Scene {
   create() {
 
     //add and play the back ground music
-    let backgroundMusic = this.sound.add("background audio");
-    backgroundMusic.play();
+    this.backgroundMusic = this.sound.add("background audio");
+    this.backgroundMusic.play();
 
     const NUM_HEARTS = 3;
 
@@ -105,7 +105,9 @@ class Game extends Phaser.Scene {
     return rightmostPipe;
   }
   die() {
+    this.backgroundMusic.stop();
     this.scene.start("Game");
+    
   }
 
   initializeHearts(numHearts, rightPadding, spacing) {
