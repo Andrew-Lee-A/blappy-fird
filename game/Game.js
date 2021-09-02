@@ -22,6 +22,9 @@ class Game extends Phaser.Scene {
     this.backgroundMusic = this.sound.add("background audio");
     this.backgroundMusic.play();
 
+    //Score counter
+    this.score = 0;
+
     const NUM_HEARTS = 3;
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
@@ -40,6 +43,9 @@ class Game extends Phaser.Scene {
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(2, heartsArray); // test line
+
+    //add buttons
+    // Andrew needs to add a return to menu button
   }
 
   update() {
@@ -63,6 +69,11 @@ class Game extends Phaser.Scene {
         }
       }
     }, this);
+
+    //Everytime the score increases by 10, increase the cat speed
+    if (this.score % 10 == 0){
+      this.increaseCatSpeed()
+    }
   }
 
   getEvents() {
@@ -133,5 +144,9 @@ class Game extends Phaser.Scene {
         heartsArray[i].setFrame(0);
       }
     }
+  }
+
+  increaseCatSpeed(){
+    this.catSpeed+= 2;
   }
 }
