@@ -5,15 +5,15 @@ class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("cat", "assests/images/player-spriteS.png");
-    this.load.image("pipe", "assests/images/default-pipe-sprite.png");
-    this.load.image("pipeInverse", "assests/images/inverse-pipe-sprite.png");
-    this.load.spritesheet("heart", "assests/images/heart-container-sheet.png", {
+    this.load.image("cat", "assets/images/player-spriteS.png");
+    this.load.image("pipe", "assets/images/default-pipe-sprite.png");
+    this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
+    this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
       frameHeight: 21,
     });
 
-    this.load.audio("background audio", "assests/audio/Child's Nightmare.ogg");
+    this.load.audio("background audio", "assets/audio/Child's Nightmare.ogg");
   }
 
   create() {

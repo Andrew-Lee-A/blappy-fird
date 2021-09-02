@@ -9,10 +9,10 @@ class GameOver extends Phaser.Scene {
     }
     
     preload() {
-        this.load.image('game-over', '../assests/game-over/gameOver.png');
-        this.load.image('small-btn', '../assests/game-over/small-btn.png');
-        this.load.image('play-again', '../assests/game-over/play-again.png');
-        this.load.image('exit', '../assests/game-over/exit.png');
+        this.load.image('game-over', '../assets/game-over/gameOver.png');
+        this.load.image('small-btn', '../assets/game-over/small-btn.png');
+        this.load.image('play-again', '../assets/game-over/play-again.png');
+        this.load.image('exit', '../assets/game-over/exit.png');
     }
 
     create() {
