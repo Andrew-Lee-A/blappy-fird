@@ -11,9 +11,16 @@ class Game extends Phaser.Scene {
       frameWidth: 28,
       frameHeight: 21,
     });
+
+    this.load.audio("background audio", "assests/audio/Child's Nightmare.ogg");
   }
 
   create() {
+
+    //add and play the back ground music
+    let backgroundMusic = this.sound.add("background audio");
+    backgroundMusic.play();
+
     const NUM_HEARTS = 3;
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
