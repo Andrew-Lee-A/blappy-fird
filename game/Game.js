@@ -146,6 +146,6 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed(){
-    this.catSpeed+= 2;
+    this.catSpeed++;
   }
 }
