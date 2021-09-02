@@ -7,6 +7,7 @@ class Game extends Phaser.Scene {
   preload() {
     this.load.image("cat", "assests/images/player-spriteS.png");
     this.load.image("pipe", "assests/images/default-pipe-sprite.png");
+    this.load.image("pipeInverse", "assests/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assests/images/heart-container-sheet.png", {
       frameWidth: 28,
       frameHeight: 21,
@@ -21,8 +22,9 @@ class Game extends Phaser.Scene {
     this.input.on("pointerdown", this.flap, this);
     this.pipeGroup = this.physics.add.group();
     this.pipePool = [];
+    // add pipes on screen
     for (let i = 0; i < 4; i++) {
-      this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
+      this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
       this.placePipes();
     }
