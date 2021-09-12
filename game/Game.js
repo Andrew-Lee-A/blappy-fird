@@ -26,19 +26,16 @@ class Game extends Phaser.Scene {
     //Score counter
     this.score = 0;
 
-    // coin score counter
-    this.coinNum = 0;
-    this.coinImg = this.physics.add.sprite(50, 50,"coin");
-    this.coinText = this.add.text(75,43,'X');
-    this.coinNumText = this.add.text(90,43,this.coinNum);
-
+    
     const NUM_HEARTS = 3;
-
+    
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
     this.pipeGroup = this.physics.add.group();
+    
     this.pipePool = [];
+    
     // add pipes on screen
     for (let i = 0; i < 4; i++) {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
@@ -47,16 +44,24 @@ class Game extends Phaser.Scene {
     }
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
-
+    
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(3, heartsArray); // test line
-
-    // coin
-    // to test coin counter
     
-    // this.coin = this.physics.add.sprite(250, game.config.height / 2,"coin");
-    // this.coin.setVelocityX(-gameOptions.catSpeed);
+    // coin
+   
+    // coin score counter
+    this.coinNum = 0;
+    this.coinImg = this.physics.add.sprite(50, 50,"coin");
+    this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
+
+    // to test coin counter  
+    this.coinGroup = this.physics.add.group();
+    this.coinGroup.create(1050, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+
+    this.coinSound = this.sound.add("coinSound", {loop: false}); 
 
   }
 
@@ -88,7 +93,15 @@ class Game extends Phaser.Scene {
     }
 
     // coin collision
-    this.physics.add.overlap( this.cat,this.coin, this.hitCoin, null, this);
+    this.physics.add.overlap( this.cat,this.coinGroup, this.hitCoin, null, this);
+
+    this.coinGroup.getChildren().forEach(function (coin) {
+      if (coin.getBounds().right < 0) {
+        this.coinGroup.clear(this.coinGroup);
+        this.coinGroup.create(780, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+        this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+      }
+    }, this);
   }
 
   getEvents() {
@@ -99,12 +112,20 @@ class Game extends Phaser.Scene {
     // pick a random event from event objs
   }
   hitCoin() {
-    this.coinSound = this.sound.add("coinSound", {loop: false}); 
-    this.coinSound.play();
+    // this.coinSound.play();
+
+    // update coin score text
     this.coinNum++;
-    this.coinNumText.setText(this.coinNum);
-    this.coin.destroy();
+    this.coinNumText.setText('X '+this.coinNum);
+
+    this.coinGroup.clear(this.coinGroup);
+    this.addCoin();
     console.log("hit");
+  }
+
+  addCoin(){
+    this.coinGroup.create(880, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
   }
 
   flap() {
