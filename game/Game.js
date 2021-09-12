@@ -7,13 +7,14 @@ class Game extends Phaser.Scene {
   preload() {
     this.load.image("cat", "assets/images/player-spriteS.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
+    this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
       frameHeight: 21,
     });
-
     this.load.audio("background audio", "assets/audio/Child's Nightmare.ogg");
+    this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
   }
 
   create() {
@@ -24,6 +25,12 @@ class Game extends Phaser.Scene {
 
     //Score counter
     this.score = 0;
+
+    // coin score counter
+    this.coinNum = 0;
+    this.coinImg = this.physics.add.sprite(50, 50,"coin");
+    this.coinText = this.add.text(75,43,'X');
+    this.coinNumText = this.add.text(90,43,this.coinNum);
 
     const NUM_HEARTS = 3;
 
@@ -44,6 +51,12 @@ class Game extends Phaser.Scene {
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(3, heartsArray); // test line
+
+    // coin
+    // to test coin counter
+    
+    // this.coin = this.physics.add.sprite(250, game.config.height / 2,"coin");
+    // this.coin.setVelocityX(-gameOptions.catSpeed);
 
   }
 
@@ -73,6 +86,9 @@ class Game extends Phaser.Scene {
     if (this.score % 10 == 0){
       this.increaseCatSpeed()
     }
+
+    // coin collision
+    this.physics.add.overlap( this.cat,this.coin, this.hitCoin, null, this);
   }
 
   getEvents() {
@@ -82,6 +98,15 @@ class Game extends Phaser.Scene {
   pickEvent() {
     // pick a random event from event objs
   }
+  hitCoin() {
+    this.coinSound = this.sound.add("coinSound", {loop: false}); 
+    this.coinSound.play();
+    this.coinNum++;
+    this.coinNumText.setText(this.coinNum);
+    this.coin.destroy();
+    console.log("hit");
+  }
+
   flap() {
     this.cat.body.velocity.y = -gameOptions.catFlapPower;
   }
