@@ -13,7 +13,7 @@ class Game extends Phaser.Scene {
       frameWidth: 28,
       frameHeight: 21,
     });
-    this.load.audio("background audio", "assets/audio/Child's Nightmare.ogg");
+    this.load.audio("background audio", "assets/audio/Child's Nightmare.wav");
     this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
   }
 
