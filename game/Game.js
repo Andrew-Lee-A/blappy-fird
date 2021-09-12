@@ -48,16 +48,16 @@ class Game extends Phaser.Scene {
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(3, heartsArray); // test line
-    
-    // coin
    
     // coin score counter
     this.coinNum = 0;
     this.coinImg = this.physics.add.sprite(50, 50,"coin");
     this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
 
-    // to test coin counter  
+    // create first coin 
     this.coinGroup = this.physics.add.group();
+
+    // given random y value 
     this.coinGroup.create(1050, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
     this.coinGroup.setVelocityX(-gameOptions.catSpeed);
 
@@ -92,9 +92,10 @@ class Game extends Phaser.Scene {
       this.increaseCatSpeed()
     }
 
-    // coin collision
+    // coin collision on pickup
     this.physics.add.overlap( this.cat,this.coinGroup, this.hitCoin, null, this);
 
+    // create next coin when missed ones go out of bounds
     this.coinGroup.getChildren().forEach(function (coin) {
       if (coin.getBounds().right < 0) {
         this.coinGroup.clear(this.coinGroup);
@@ -112,15 +113,18 @@ class Game extends Phaser.Scene {
     // pick a random event from event objs
   }
   hitCoin() {
-    // this.coinSound.play();
+
+    this.coinSound.play();
 
     // update coin score text
     this.coinNum++;
-    this.coinNumText.setText('X '+this.coinNum);
+    this.coinNumText.setText('X '+ this.coinNum);
 
+    // delete coin
     this.coinGroup.clear(this.coinGroup);
+
+    // add next coin
     this.addCoin();
-    console.log("hit");
   }
 
   addCoin(){
