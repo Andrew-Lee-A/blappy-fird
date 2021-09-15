@@ -1,4 +1,4 @@
-/** @type {import("../typing/phaser")} */
+
 
 class GameOver extends Phaser.Scene {
     constructor() {
