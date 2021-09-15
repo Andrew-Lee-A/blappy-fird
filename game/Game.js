@@ -112,9 +112,11 @@ class Game extends Phaser.Scene {
       if (this.isMuteflag == false){
         this.muteButton.setTexture("unmuteButton");
         this.isMuteflag = true;
+        this.muteAll();
       }else if (this.isMuteflag == true){
         this.muteButton.setTexture("muteButton");
         this.isMuteflag = false;
+        this.unmuteAll();
       }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
@@ -273,4 +275,13 @@ class Game extends Phaser.Scene {
     this.catSpeed++;
   }
 
+  muteAll(){
+    this.backgroundMusic.mute = true;
+    this.coinSound.mute = true;
+  }
+
+  unmuteAll(){
+    this.backgroundMusic.mute = false;
+    this.coinSound.mute = false;
+  }
 }
