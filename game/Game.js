@@ -46,8 +46,8 @@ class Game extends Phaser.Scene {
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
     // setting score
     this.timedEvent = this.time.addEvent({
-      delay: 2000,
-      callback: this.onEvent,
+      delay: 1500,
+      callback: this.scoreIncrease,
       callbackScope: this,
       loop: true,
       paused: false,
@@ -128,9 +128,8 @@ class Game extends Phaser.Scene {
       }
     }, this);
   }
-  onEvent() {
+  scoreIncrease() {
     this.score += 10;
-    console.log(this.score);
   }
   getEvents() {
     // create all event obj
