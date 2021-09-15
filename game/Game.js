@@ -74,6 +74,7 @@ class Game extends Phaser.Scene {
 
 
     //pause button
+    this.isPauseflag = false;
     this.pauseButton = this.add.image(game.config.width-60, game.config.height-30, "pauseButton");
     this.pauseButton.setInteractive()
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -84,6 +85,13 @@ class Game extends Phaser.Scene {
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
       this.pauseButton.setTint(0x8afbff)
+      if (this.isPauseflag == false){
+        this.pauseButton.setTexture("resumeButton");
+        this.isPauseflag = true;
+      }else if (this.isPauseflag == true){
+        this.pauseButton.setTexture("pauseButton");
+        this.isPauseflag = false;
+      }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
       this.pauseButton.setTint(0xffffff)
@@ -100,12 +108,13 @@ class Game extends Phaser.Scene {
       this.muteButton.setTint(0xffffff)
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.muteButton.setTint(0x8afbff)
       if (this.isMuteflag == false){
         this.muteButton.setTexture("unmuteButton");
-        this.isMuteFlag = true;
+        this.isMuteflag = true;
       }else if (this.isMuteflag == true){
         this.muteButton.setTexture("muteButton");
-        this.isMuteFlag = false;
+        this.isMuteflag = false;
       }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
