@@ -28,7 +28,7 @@ class GameOver extends Phaser.Scene {
         //set backGround color to Black
         this.cameras.main.setBackgroundColor('#000000');
 
-        let coins = 10;
+        let coins = localStorage.getItem("currentCoin");
         let score = 1000;
 
         this.title.gameOver = this.add.sprite(config.width/2, padding + 100, 'game-over');

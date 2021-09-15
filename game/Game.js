@@ -54,6 +54,12 @@ class Game extends Phaser.Scene {
     this.coinImg = this.physics.add.sprite(50, 50,"coin");
     this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
 
+    // reset variable in localstorage
+    localStorage.setItem("currentCoin", "0");
+    localStorage.setItem("currentScore", "0");
+    
+
+
     // add coin when true
     this.addNewCoin = false;
     
@@ -83,12 +89,11 @@ class Game extends Phaser.Scene {
     }
     this.pipeGroup.getChildren().forEach(function (pipe) {
       if (pipe.getBounds().right < 0) {
-        console.log("sad");
         this.pipePool.push(pipe);
         if (this.pipePool.length == 2) {
           this.placePipes(true);
         }
-        //  when pipes are being pushed
+        // when pipes are being pushed
         // check if addnewcoin is true new coin will be made
         if(this.addNewCoin){
           // add new coin
@@ -134,9 +139,13 @@ class Game extends Phaser.Scene {
 
     // delete coin
     this.coinGroup.clear(this.coinGroup);
-    this.addNewCoin = true;
-    // add next coin
 
+    // add next coin
+    this.addNewCoin = true;
+
+    // update coin in localStorage
+    var coinCount = this.coinNum;
+    localStorage.setItem("currentCoin", coinCount);
   }
 
   addCoin(){
@@ -180,7 +189,8 @@ class Game extends Phaser.Scene {
   }
   die() {
     this.backgroundMusic.stop();
-    this.scene.start("Game");
+    // this.scene.start("Game");
+    this.scene.start("GameOver");
     
   }
 
