@@ -219,6 +219,9 @@ class Game extends Phaser.Scene {
     } else {
       this.scene.start("Game");
       this.backgroundMusic.stop();
+      setTimeout(() => {
+        this.cameras.main.shake(200, 0.01);
+      }, 25);
     }
   }
 
