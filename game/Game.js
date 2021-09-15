@@ -69,7 +69,7 @@ class Game extends Phaser.Scene {
     this.coinGroup = this.physics.add.group();
 
     // given random y value 
-    this.coinGroup.create(1050, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
     this.coinGroup.setVelocityX(-gameOptions.catSpeed);
 
     this.coinSound = this.sound.add("coinSound", {loop: false}); 
@@ -211,9 +211,10 @@ class Game extends Phaser.Scene {
     this.currentHeart--;
     if (this.currentHeart == 0) {
       this.currentHeart = 3;
-      this.score = 0;
+      localStorage.setItem("currentScore", this.score);
       this.scene.stop("Game");
       this.scene.start("GameOver");
+      this.score = 0;
       this.backgroundMusic.stop();
     } else {
       this.scene.start("Game");
