@@ -54,6 +54,9 @@ class Game extends Phaser.Scene {
     this.coinImg = this.physics.add.sprite(50, 50,"coin");
     this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
 
+    // add coin when true
+    this.addNewCoin = false;
+    
     // create first coin 
     this.coinGroup = this.physics.add.group();
 
@@ -80,11 +83,20 @@ class Game extends Phaser.Scene {
     }
     this.pipeGroup.getChildren().forEach(function (pipe) {
       if (pipe.getBounds().right < 0) {
+        console.log("sad");
         this.pipePool.push(pipe);
         if (this.pipePool.length == 2) {
           this.placePipes(true);
         }
+        //  when pipes are being pushed
+        // check if addnewcoin is true new coin will be made
+        if(this.addNewCoin){
+          // add new coin
+          this.addCoin();
+          this.addNewCoin=false;
+        }
       }
+      
     }, this);
 
     //Everytime the score increases by 10, increase the cat speed
@@ -98,9 +110,9 @@ class Game extends Phaser.Scene {
     // create next coin when missed ones go out of bounds
     this.coinGroup.getChildren().forEach(function (coin) {
       if (coin.getBounds().right < 0) {
+        // delete coin and add new coin
+        this.addNewCoin = true;
         this.coinGroup.clear(this.coinGroup);
-        this.coinGroup.create(780, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
-        this.coinGroup.setVelocityX(-gameOptions.catSpeed);
       }
     }, this);
   }
@@ -122,13 +134,13 @@ class Game extends Phaser.Scene {
 
     // delete coin
     this.coinGroup.clear(this.coinGroup);
-
+    this.addNewCoin = true;
     // add next coin
-    this.addCoin();
+
   }
 
   addCoin(){
-    this.coinGroup.create(880, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.create(900, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
     this.coinGroup.setVelocityX(-gameOptions.catSpeed);
   }
 
