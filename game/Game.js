@@ -5,6 +5,7 @@ class Game extends Phaser.Scene {
     super({ key: "Game" });
     this.currentHeart = 3;
     this.score = 0;
+    this.coinNum = 0;
   }
 
   preload() {
@@ -58,9 +59,12 @@ class Game extends Phaser.Scene {
     this.setHearts(this.currentHeart, heartsArray); // test line
 
     // coin score counter
-    this.coinNum = 0;
     this.coinImg = this.physics.add.sprite(50, 50,"coin");
     this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
+
+    // reset local storage
+    localStorage.setItem("currentCoin", 0);
+    localStorage.setItem("currentScore", 0);
     
     // add coin when true
     this.addNewCoin = false;
@@ -215,6 +219,7 @@ class Game extends Phaser.Scene {
       this.scene.stop("Game");
       this.scene.start("GameOver");
       this.score = 0;
+      this.coinNum = 0;
       this.backgroundMusic.stop();
     } else {
       this.scene.start("Game");
