@@ -5,9 +5,6 @@ class Game extends Phaser.Scene {
     super({ key: "Game" });
     this.currentHeart = 3;
     this.score = 0;
-    this.gameRunning = true;
-    this.total = 0;
-   
   }
 
   preload() {
@@ -20,25 +17,25 @@ class Game extends Phaser.Scene {
       frameHeight: 21,
     });
     this.load.audio("background audio", "assets/audio/Child's Nightmare.wav");
-    this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
+    this.load.audio("coinSound", "assets/audio/coin-pickup.wav");
   }
 
   create() {
     //add and play the back ground music
-    // this.backgroundMusic = this.sound.add("background audio");
-    // this.backgroundMusic.play();
+    this.backgroundMusic = this.sound.add("background audio");
+    this.backgroundMusic.play();
 
-    
     const NUM_HEARTS = 3;
-    
+
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
-    this.scoreText = this.add.text(0,0,"Score: ");
+   
     this.pipeGroup = this.physics.add.group();
-    
+    this.coinGroup = this.physics.add.group();
+
     this.pipePool = [];
-    
+
     // add pipes on screen
     for (let i = 0; i < 4; i++) {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
@@ -47,32 +44,32 @@ class Game extends Phaser.Scene {
     }
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
-    this.collides = true;
     // setting score
     this.timedEvent = this.time.addEvent({
-     delay: 2000,
-     callback: this.onEvent,
-     callbackScope: this,
-     loop: true,
-     paused: false
-   });
+      delay: 2000,
+      callback: this.onEvent,
+      callbackScope: this,
+      loop: true,
+      paused: false,
+    }); 
+    this.scoreText = this.add.text(0, 0);
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(this.currentHeart, heartsArray); // test line
   }
 
   update() {
-    if (this.collides) {
-      this.physics.world.collide(
-        this.cat,
-        this.pipeGroup,
-        function () {
-          this.die();
-        },
-        null,
-        this
-      );
-    }
+    this.scoreText.setText("Score: " + this.score);
+    this.physics.world.collide(
+      this.cat,
+      this.pipeGroup,
+      function () {
+        this.die();
+      },
+      null,
+      this
+    );
+
     this.hitBounds();
     this.pipeGroup.getChildren().forEach(function (pipe) {
       if (pipe.getBounds().right < 0) {
@@ -82,13 +79,12 @@ class Game extends Phaser.Scene {
         }
         // when pipes are being pushed
         // check if addnewcoin is true new coin will be made
-        if(this.addNewCoin){
+        if (this.addNewCoin) {
           // add new coin
           this.addCoin();
-          this.addNewCoin=false;
+          this.addNewCoin = false;
         }
       }
-      
     }, this);
 
     //Everytime the score increases by 10, increase the cat speed
@@ -97,7 +93,13 @@ class Game extends Phaser.Scene {
     }
 
     // coin collision on pickup
-    this.physics.add.overlap( this.cat,this.coinGroup, this.hitCoin, null, this);
+    this.physics.add.overlap(
+      this.cat,
+      this.coinGroup,
+      this.hitCoin,
+      null,
+      this
+    );
 
     // create next coin when missed ones go out of bounds
     this.coinGroup.getChildren().forEach(function (coin) {
@@ -108,8 +110,8 @@ class Game extends Phaser.Scene {
       }
     }, this);
   }
-  onEvent(){
-    this.score+= 10;
+  onEvent() {
+    this.score += 10;
     console.log(this.score);
   }
   getEvents() {
@@ -120,12 +122,11 @@ class Game extends Phaser.Scene {
     // pick a random event from event objs
   }
   hitCoin() {
-
     this.coinSound.play();
 
     // update coin score text
     this.coinNum++;
-    this.coinNumText.setText('X '+ this.coinNum);
+    this.coinNumText.setText("X " + this.coinNum);
 
     // delete coin
     this.coinGroup.clear(this.coinGroup);
@@ -138,8 +139,12 @@ class Game extends Phaser.Scene {
     localStorage.setItem("currentCoin", coinCount);
   }
 
-  addCoin(){
-    this.coinGroup.create(900, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+  addCoin() {
+    this.coinGroup.create(
+      900,
+      Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
+      "coin"
+    );
     this.coinGroup.setVelocityX(-gameOptions.catSpeed);
   }
 
@@ -192,9 +197,10 @@ class Game extends Phaser.Scene {
       this.score = 0;
       this.scene.stop("Game");
       this.scene.start("GameOver");
-      // this.backgroundMusic.stop();
+      this.backgroundMusic.stop();
     } else {
       this.scene.start("Game");
+      this.backgroundMusic.stop();
     }
   }
 
@@ -232,6 +238,4 @@ class Game extends Phaser.Scene {
   increaseCatSpeed() {
     this.catSpeed += 2;
   }
-
-  
 }
