@@ -1,7 +1,13 @@
 /** @type {import("../typing/phaser")} */
+
 class Game extends Phaser.Scene {
   constructor() {
     super({ key: "Game" });
+    this.currentHeart = 3;
+    this.score = 0;
+    this.gameRunning = true;
+    this.total = 0;
+   
   }
 
   preload() {
@@ -17,19 +23,16 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-
     //add and play the back ground music
-    this.backgroundMusic = this.sound.add("background audio");
-    this.backgroundMusic.play();
-
-    //Score counter
-    this.score = 0;
+    // this.backgroundMusic = this.sound.add("background audio");
+    // this.backgroundMusic.play();
 
     const NUM_HEARTS = 3;
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
+    this.scoreText = this.add.text(0,0,"Score: ");
     this.pipeGroup = this.physics.add.group();
     this.pipePool = [];
     // add pipes on screen
@@ -40,26 +43,33 @@ class Game extends Phaser.Scene {
     }
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
-
+    this.collides = true;
+    // setting score
+    this.timedEvent = this.time.addEvent({
+     delay: 2000,
+     callback: this.onEvent,
+     callbackScope: this,
+     loop: true,
+     paused: false
+   });
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
-    this.setHearts(3, heartsArray); // test line
-
+    this.setHearts(this.currentHeart, heartsArray); // test line
   }
 
   update() {
-    this.physics.world.collide(
-      this.cat,
-      this.pipeGroup,
-      function () {
-        this.die();
-      },
-      null,
-      this
-    );
-    if (this.cat.y > game.config.height || this.cat.y < 0) {
-      this.die();
+    if (this.collides) {
+      this.physics.world.collide(
+        this.cat,
+        this.pipeGroup,
+        function () {
+          this.die();
+        },
+        null,
+        this
+      );
     }
+    this.hitBounds();
     this.pipeGroup.getChildren().forEach(function (pipe) {
       if (pipe.getBounds().right < 0) {
         this.pipePool.push(pipe);
@@ -70,11 +80,14 @@ class Game extends Phaser.Scene {
     }, this);
 
     //Everytime the score increases by 10, increase the cat speed
-    if (this.score % 10 == 0){
-      this.increaseCatSpeed()
+    if (this.score % 10 == 0) {
+      this.increaseCatSpeed();
     }
   }
-
+  onEvent(){
+    this.score+= 10;
+    console.log(this.score);
+  }
   getEvents() {
     // create all event obj
   }
@@ -104,9 +117,11 @@ class Game extends Phaser.Scene {
       );
     this.pipePool[0].y = pipeHolePosition - pipeHoleHeight / 2;
     this.pipePool[0].setOrigin(0, 1);
+    this.pipePool[0].setImmovable(true);
     this.pipePool[1].x = this.pipePool[0].x;
     this.pipePool[1].y = pipeHolePosition + pipeHoleHeight / 2;
     this.pipePool[1].setOrigin(0, 0);
+    this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
   getRightMostPipe() {
@@ -116,19 +131,40 @@ class Game extends Phaser.Scene {
     });
     return rightmostPipe;
   }
+
+  hitBounds() {
+    if (this.cat.y > game.config.height || this.cat.y < 0) {
+      this.die();
+    }
+  }
   die() {
-    this.backgroundMusic.stop();
-    this.scene.start("Game");
-    
+    this.currentHeart--;
+    if (this.currentHeart == 0) {
+      this.currentHeart = 3;
+      this.score = 0;
+      this.scene.stop("Game");
+      this.scene.start("GameOver");
+      // this.backgroundMusic.stop();
+    } else {
+      this.scene.start("Game");
+    }
   }
 
   initializeHearts(numHearts, rightPadding, spacing) {
     const heartsArray = [];
-    for(let i = 0; i < numHearts; i++) {
-      if(i == 0) {
-        heartsArray[i] = this.add.sprite((config.width - rightPadding), 30, 'heart');
+    for (let i = 0; i < numHearts; i++) {
+      if (i == 0) {
+        heartsArray[i] = this.add.sprite(
+          config.width - rightPadding,
+          30,
+          "heart"
+        );
       } else {
-        heartsArray[i] = this.add.sprite((config.width - i * spacing) - rightPadding, 30, 'heart');
+        heartsArray[i] = this.add.sprite(
+          config.width - i * spacing - rightPadding,
+          30,
+          "heart"
+        );
       }
     }
 
@@ -136,8 +172,8 @@ class Game extends Phaser.Scene {
   }
 
   setHearts(activeHearts, heartsArray) {
-    for(let i = heartsArray.length - 1; i >= 0; i--) {
-      if(i >= activeHearts) {
+    for (let i = heartsArray.length - 1; i >= 0; i--) {
+      if (i >= activeHearts) {
         heartsArray[i].setFrame(1);
       } else {
         heartsArray[i].setFrame(0);
@@ -145,7 +181,9 @@ class Game extends Phaser.Scene {
     }
   }
 
-  increaseCatSpeed(){
-    this.catSpeed+= 2;
+  increaseCatSpeed() {
+    this.catSpeed += 2;
   }
+
+  
 }
