@@ -56,6 +56,24 @@ class Game extends Phaser.Scene {
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(this.currentHeart, heartsArray); // test line
+
+    // coin score counter
+    this.coinNum = 0;
+    this.coinImg = this.physics.add.sprite(50, 50,"coin");
+    this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
+    
+    // add coin when true
+    this.addNewCoin = false;
+
+    // create first coin 
+    this.coinGroup = this.physics.add.group();
+
+    // given random y value 
+    this.coinGroup.create(1050, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+
+    this.coinSound = this.sound.add("coinSound", {loop: false}); 
+    
   }
 
   update() {
