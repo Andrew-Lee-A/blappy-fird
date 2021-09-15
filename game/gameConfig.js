@@ -1,5 +1,7 @@
 /** @type {import("../typing/phaser")} */
 
+const gameState = {};
+
 const config = {
   type: Phaser.AUTO,
   width: 600,
