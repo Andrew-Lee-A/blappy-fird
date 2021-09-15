@@ -15,6 +15,13 @@ class Game extends Phaser.Scene {
     });
     this.load.audio("background audio", "assets/audio/Child's Nightmare.ogg");
     this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
+
+    //UI Buttons
+    this.load.image("resumeButton", "assets/buttons/resume.png");
+    this.load.image("pauseButton", "assets/buttons/pause.png");
+    this.load.image("homeButton", "assets/buttons/home.png");
+    this.load.image("muteButton", "assets/buttons/audio_on.png");
+    this.load.image("unmuteButton", "assets/buttons/audio_off.png");
   }
 
   create() {
@@ -63,6 +70,47 @@ class Game extends Phaser.Scene {
 
     this.coinSound = this.sound.add("coinSound", {loop: false}); 
 
+    //this.scene.launch(UIScene);
+
+
+    //pause button
+    this.pauseButton = this.add.image(game.config.width-60, game.config.height-30, "pauseButton");
+    this.pauseButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.pauseButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.pauseButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.pauseButton.setTint(0x8afbff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.pauseButton.setTint(0xffffff)
+    })
+
+    //mute button
+    this.isMuteflag = false;
+    this.muteButton = this.add.image(game.config.width-110, game.config.height-30, "muteButton");
+    this.muteButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.muteButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.muteButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      if (this.isMuteflag == false){
+        this.muteButton.setTexture("unmuteButton");
+        this.isMuteFlag = true;
+      }else if (this.isMuteflag == true){
+        this.muteButton.setTexture("muteButton");
+        this.isMuteFlag = false;
+      }
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.muteButton.setTint(0xffffff)
+    })
   }
 
   update() {
@@ -198,4 +246,5 @@ class Game extends Phaser.Scene {
   increaseCatSpeed(){
     this.catSpeed++;
   }
+
 }
