@@ -1,4 +1,4 @@
-/** @type {import("../typing/phaser")} */
+
 
 class GameOver extends Phaser.Scene {
     constructor() {
@@ -29,7 +29,7 @@ class GameOver extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#000000');
 
         let coins = localStorage.getItem("currentCoin");
-        let score = 1000;
+        let score = localStorage.getItem("currentScore");
 
         this.title.gameOver = this.add.sprite(config.width/2, padding + 100, 'game-over');
         let coinText =  this.add.text(config.width/10, spacingY+padding+gameOver+spacingY, `Coins Collected: ${coins}`, {fill: '#FFFFFF', fontSize:'16px'});
