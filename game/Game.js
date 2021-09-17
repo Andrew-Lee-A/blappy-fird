@@ -12,16 +12,27 @@ class Game extends Phaser.Scene {
     this.load.image("cat", "assets/images/player-spriteS.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
+    this.load.image("boosted-cat", "assets/images/boosted-player.png")
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
       frameHeight: 21,
     });
     this.load.audio("background audio", "assets/audio/Child's Nightmare.wav");
-    this.load.audio("coinSound", "assets/audio/coin-pickup.wav");
+    this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
+
+    //UI Buttons
+    this.load.image("resumeButton", "assets/buttons/resume.png");
+    this.load.image("pauseButton", "assets/buttons/pause.png");
+    this.load.image("homeButton", "assets/buttons/home.png");
+    this.load.image("muteButton", "assets/buttons/audio_on.png");
+    this.load.image("unmuteButton", "assets/buttons/audio_off.png");
   }
 
   create() {
+
+    this.gameSpeed = gameOptions.catSpeed;
+
     //add and play the back ground music
     this.backgroundMusic = this.sound.add("background audio");
     this.backgroundMusic.play();
@@ -31,7 +42,7 @@ class Game extends Phaser.Scene {
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
-   
+
     this.pipeGroup = this.physics.add.group();
     this.coinGroup = this.physics.add.group();
 
@@ -44,7 +55,7 @@ class Game extends Phaser.Scene {
       this.placePipes();
     }
     // pipe speed according to player
-    this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
+    this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
     this.timedEvent = this.time.addEvent({
       delay: 1500,
@@ -52,20 +63,20 @@ class Game extends Phaser.Scene {
       callbackScope: this,
       loop: true,
       paused: false,
-    }); 
+    });
     this.scoreText = this.add.text(0, 0);
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(this.currentHeart, heartsArray); // test line
 
     // coin score counter
-    this.coinImg = this.physics.add.sprite(50, 50,"coin");
-    this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
+    this.coinImg = this.physics.add.sprite(50, 50, "coin");
+    this.coinNumText = this.add.text(75, 43, 'X ' + this.coinNum);
 
     // reset local storage
     localStorage.setItem("currentCoin", 0);
     localStorage.setItem("currentScore", 0);
-    
+
     // add coin when true
     this.addNewCoin = false;
 
@@ -73,11 +84,94 @@ class Game extends Phaser.Scene {
     this.coinGroup = this.physics.add.group();
 
     // given random y value 
-    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
-    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
+    this.coinGroup.setVelocityX(-this.gameSpeed);
 
     this.coinSound = this.sound.add("coinSound", {loop: false}); 
-    
+
+    //this.scene.launch(UIScene);
+
+
+    //pause button
+    this.isPauseflag = false;
+    this.pauseButton = this.add.image(game.config.width-80, game.config.height-30, "pauseButton");
+    this.pauseButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.pauseButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.pauseButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.pauseButton.setTint(0x8afbff)
+      if (this.isPauseflag == false){
+        this.pauseButton.setTexture("pauseButton");
+        this.isPauseflag = true;
+        this.timedEvent.paused = true;
+        this.cat.body.moves = false;
+        this.pipeGroup.setVelocityX(0);
+        this.coinGroup.setVelocityX(0);
+        this.muteAll();
+      }else if (this.isPauseflag == true){
+        this.pauseButton.setTexture("resumeButton");
+        this.isPauseflag = false;
+        this.timedEvent.paused = false;
+        this.cat.body.moves = true;
+        this.pipeGroup.setVelocityX(-this.gameSpeed);
+        this.coinGroup.setVelocityX(-this.gameSpeed);
+        this.unmuteAll();
+      }
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.pauseButton.setTint(0xffffff)
+    })
+
+    //mute button
+    this.isMuteflag = false;
+    this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
+    this.muteButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.muteButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.muteButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.muteButton.setTint(0x8afbff)
+      if (this.isMuteflag == false){
+        this.muteButton.setTexture("unmuteButton");
+        this.isMuteflag = true;
+        this.muteAll();
+      }else if (this.isMuteflag == true){
+        this.muteButton.setTexture("muteButton");
+        this.isMuteflag = false;
+        this.unmuteAll();
+      }
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.muteButton.setTint(0xffffff)
+    })
+
+
+    //home button
+    this.homeButton = this.add.image(game.config.width-30, game.config.height-30, "homeButton");
+    this.homeButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.homeButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.homeButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.homeButton.setTint(0x8afbff);
+      this.backgroundMusic.stop();
+      this.scene.stop("Game");
+      this.scene.start("MainMenu")
+      
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.homeButton.setTint(0xffffff)
+    })
   }
 
   update() {
@@ -110,8 +204,13 @@ class Game extends Phaser.Scene {
     }, this);
 
     //Everytime the score increases by 10, increase the cat speed
-    if (this.score % 10 == 0) {
-      this.increaseCatSpeed();
+    //if (this.score %10 == 0) {
+    //this.increaseCatSpeed();
+    //}
+
+    //If catspeed reaches threshold update the texture
+    if (this.gameSpeed == 140) {
+      this.cat.setTexture("boosted-cat");
     }
 
     // coin collision on pickup
@@ -134,6 +233,7 @@ class Game extends Phaser.Scene {
   }
   scoreIncrease() {
     this.score += 10;
+    this.increaseCatSpeed();
   }
   getEvents() {
     // create all event obj
@@ -156,8 +256,7 @@ class Game extends Phaser.Scene {
     this.addNewCoin = true;
 
     // update coin in localStorage
-    var coinCount = this.coinNum;
-    localStorage.setItem("currentCoin", coinCount);
+    localStorage.setItem("currentCoin", this.coinNum);
   }
 
   addCoin() {
@@ -166,7 +265,7 @@ class Game extends Phaser.Scene {
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
-    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+    this.coinGroup.setVelocityX(-this.gameSpeed);
   }
 
   flap() {
@@ -216,6 +315,7 @@ class Game extends Phaser.Scene {
     if (this.currentHeart == 0) {
       this.currentHeart = 3;
       localStorage.setItem("currentScore", this.score);
+      localStorage.setItem("currentCoin", this.coinNum);
       this.scene.stop("Game");
       this.scene.start("GameOver");
       this.score = 0;
@@ -224,6 +324,9 @@ class Game extends Phaser.Scene {
     } else {
       this.scene.start("Game");
       this.backgroundMusic.stop();
+      setTimeout(() => {
+        this.cameras.main.shake(200, 0.01);
+      }, 25);
     }
   }
 
@@ -259,6 +362,20 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    this.catSpeed += 2;
+    if (this.gameSpeed < 200) {
+      this.gameSpeed += 5;
+    }
+    this.coinGroup.setVelocityX(-this.gameSpeed);
+    this.pipeGroup.setVelocityX(-this.gameSpeed);
+  }
+
+  muteAll(){
+    this.backgroundMusic.mute = true;
+    this.coinSound.mute = true;
+  }
+
+  unmuteAll(){
+    this.backgroundMusic.mute = false;
+    this.coinSound.mute = false;
   }
 }
