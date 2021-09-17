@@ -12,7 +12,7 @@ class Game extends Phaser.Scene {
     this.load.image("cat", "assets/images/player-spriteS.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
-    this.load.image("fastcat", "assets/images/boosted-player.png")
+    this.load.image("boosted-cat", "assets/images/boosted-player.png")
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
@@ -23,6 +23,9 @@ class Game extends Phaser.Scene {
   }
 
   create() {
+
+    this.gameSpeed = gameOptions.catSpeed;
+    
     //add and play the back ground music
     this.backgroundMusic = this.sound.add("background audio");
     this.backgroundMusic.play();
@@ -45,11 +48,11 @@ class Game extends Phaser.Scene {
       this.placePipes();
     }
     // pipe speed according to player
-    this.pipeGroup.setVelocityX(-gameOptions.catSpeed);
+    this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
     this.timedEvent = this.time.addEvent({
       delay: 1500,
-      callback: this.scoreIncrease,
+      callback: this.scoreIncrease, 
       callbackScope: this,
       loop: true,
       paused: false,
@@ -75,7 +78,7 @@ class Game extends Phaser.Scene {
 
     // given random y value 
     this.coinGroup.create(1100, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
-    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+    this.coinGroup.setVelocityX(-this.gameSpeed);
 
     this.coinSound = this.sound.add("coinSound", {loop: false}); 
     
@@ -111,13 +114,13 @@ class Game extends Phaser.Scene {
     }, this);
 
     //Everytime the score increases by 10, increase the cat speed
-    if (this.score % 10 == 0) {
-      this.increaseCatSpeed();
-    }
+    //if (this.score %10 == 0) {
+      //this.increaseCatSpeed();
+    //}
 
     //If catspeed reaches threshold update the texture
-    if(game.config.catSpeed == 160){
-      
+    if(this.score == 50){
+      this.cat.setTexture("boosted-cat");
     }
 
     // coin collision on pickup
@@ -140,6 +143,7 @@ class Game extends Phaser.Scene {
   }
   scoreIncrease() {
     this.score += 10;
+    this.increaseCatSpeed();
   }
   getEvents() {
     // create all event obj
@@ -172,7 +176,7 @@ class Game extends Phaser.Scene {
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
-    this.coinGroup.setVelocityX(-gameOptions.catSpeed);
+    this.coinGroup.setVelocityX(-this.gameSpeed);
   }
 
   flap() {
@@ -268,6 +272,9 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    game.config.catSpeed += 2;
+    this.gameSpeed+=10;
+    this.coinGroup.setVelocityX(-this.gameSpeed);
+    this.pipeGroup.setVelocityX(-this.gameSpeed);
+    this.backgroundMusic.setRate(this.backgroundMusic.getRate()*1.1);
   }
 }
