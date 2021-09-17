@@ -41,7 +41,7 @@ class Game extends Phaser.Scene {
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
-    this.input.on("pointerdown", this.flap, this);
+    this.fly = this.input.on("pointerdown", this.flap, this);
    
     this.pipeGroup = this.physics.add.group();
     this.coinGroup = this.physics.add.group();
@@ -108,11 +108,18 @@ class Game extends Phaser.Scene {
         this.pauseButton.setTexture("pauseButton");
         this.isPauseflag = true;
         this.timedEvent.paused = true;
+        this.cat.body.moves = false;
+        this.pipeGroup.setVelocityX(0);
+        this.coinGroup.setVelocityX(0);
+        this.muteAll();
       }else if (this.isPauseflag == true){
         this.pauseButton.setTexture("resumeButton");
         this.isPauseflag = false;
         this.timedEvent.paused = false;
-
+        this.cat.body.moves = true;
+        this.pipeGroup.setVelocityX(-this.gameSpeed);
+        this.coinGroup.setVelocityX(-this.gameSpeed);
+        this.unmuteAll();
       }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
