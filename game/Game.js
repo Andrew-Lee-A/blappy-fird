@@ -119,7 +119,7 @@ class Game extends Phaser.Scene {
     //}
 
     //If catspeed reaches threshold update the texture
-    if(this.score == 50){
+    if(this.gameSpeed == 140){
       this.cat.setTexture("boosted-cat");
     }
 
@@ -272,7 +272,9 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    this.gameSpeed+=10;
+    if (this.gameSpeed < 200){
+      this.gameSpeed+=5;
+    }
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
   }
