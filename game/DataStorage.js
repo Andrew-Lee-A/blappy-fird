@@ -17,9 +17,11 @@ class DataStorage {
         localStorage.setItem("coin", totalCoin);
     }
 
+    // gameType specify what game score to set
     setScore(gameType, score) {
         switch (gameType) {
             case 'laser':
+                // check if new score is higher then the old score
                 if (this.score._laserScore < score) {
                     this.score._laserScore = score;
                     // value of score is binding to the local storage key 'laserScore'
@@ -45,6 +47,7 @@ class DataStorage {
         }
     }
 
+    // gameType specify what game score to get
     getScore(gameType) {
         switch (gameType) {
             case 'laser':
