@@ -105,11 +105,14 @@ class Game extends Phaser.Scene {
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
       this.pauseButton.setTint(0x8afbff)
       if (this.isPauseflag == false){
-        this.pauseButton.setTexture("resumeButton");
-        this.isPauseflag = true;
-      }else if (this.isPauseflag == true){
         this.pauseButton.setTexture("pauseButton");
+        this.isPauseflag = true;
+        this.timedEvent.paused = true;
+      }else if (this.isPauseflag == true){
+        this.pauseButton.setTexture("resumeButton");
         this.isPauseflag = false;
+        this.timedEvent.paused = false;
+
       }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
