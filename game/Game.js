@@ -275,6 +275,5 @@ class Game extends Phaser.Scene {
     this.gameSpeed+=10;
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
-    this.backgroundMusic.setRate(this.backgroundMusic.getRate()*1.1);
   }
 }
