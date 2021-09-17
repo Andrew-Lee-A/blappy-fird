@@ -1,11 +1,13 @@
 /** @type {import("../typing/phaser")} */
 
+const gameState = {};
+
 const config = {
   type: Phaser.AUTO,
   width: 600,
   height: 800,
   backgroundColor: "#6C3FDD",
-  scene: [Game, GameOver],
+  scene: [MainMenu, Game, GameOver],
   pixelArt: true,
   physics: {
     default: "arcade",
@@ -21,7 +23,7 @@ const gameOptions = {
   catGravity: 800,
   catFlapPower: 300,
   minPipeHeight: 50,
-  pipeDistance: [250, 250],
+  pipeDistance: [250, 300],
   pipeHole: [150, 170],
 };
 
