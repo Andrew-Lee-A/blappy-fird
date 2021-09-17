@@ -135,6 +135,9 @@ class Game extends Phaser.Scene {
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
       this.homeButton.setTint(0x8afbff)
+      this.scene.stop("Game");
+      this.scene.start("MainMenu")
+      this.backgroundMusic.stop;
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
       this.homeButton.setTint(0xffffff)
@@ -165,7 +168,7 @@ class Game extends Phaser.Scene {
 
     //Everytime the score increases by 10, increase the cat speed
     if (this.score % 10 == 0){
-      this.increaseCatSpeed()
+      this.increaseCatSpeed();
     }
 
     // coin collision on pickup
