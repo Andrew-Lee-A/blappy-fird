@@ -163,10 +163,11 @@ class Game extends Phaser.Scene {
       this.homeButton.setTint(0xffffff)
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.homeButton.setTint(0x8afbff)
+      this.homeButton.setTint(0x8afbff);
+      this.backgroundMusic.stop();
       this.scene.stop("Game");
       this.scene.start("MainMenu")
-      this.backgroundMusic.stop;
+      
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
       this.homeButton.setTint(0xffffff)
