@@ -156,8 +156,7 @@ class Game extends Phaser.Scene {
     this.addNewCoin = true;
 
     // update coin in localStorage
-    var coinCount = this.coinNum;
-    localStorage.setItem("currentCoin", coinCount);
+    localStorage.setItem("currentCoin", this.coinNum);
   }
 
   addCoin() {
@@ -216,6 +215,7 @@ class Game extends Phaser.Scene {
     if (this.currentHeart == 0) {
       this.currentHeart = 3;
       localStorage.setItem("currentScore", this.score);
+      localStorage.setItem("currentCoin", this.coinNum);
       this.scene.stop("Game");
       this.scene.start("GameOver");
       this.score = 0;
