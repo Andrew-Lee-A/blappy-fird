@@ -12,6 +12,7 @@ class Game extends Phaser.Scene {
     this.load.image("cat", "assets/images/player-spriteS.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
+    this.load.image("fastcat", "assets/images/boosted-player.png")
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
@@ -112,6 +113,11 @@ class Game extends Phaser.Scene {
     //Everytime the score increases by 10, increase the cat speed
     if (this.score % 10 == 0) {
       this.increaseCatSpeed();
+    }
+
+    //If catspeed reaches threshold update the texture
+    if(game.config.catSpeed == 160){
+      
     }
 
     // coin collision on pickup
@@ -262,6 +268,6 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    this.catSpeed += 2;
+    game.config.catSpeed += 2;
   }
 }
