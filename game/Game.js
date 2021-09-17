@@ -25,7 +25,7 @@ class Game extends Phaser.Scene {
   create() {
 
     this.gameSpeed = gameOptions.catSpeed;
-    
+
     //add and play the back ground music
     this.backgroundMusic = this.sound.add("background audio");
     this.backgroundMusic.play();
@@ -35,7 +35,7 @@ class Game extends Phaser.Scene {
     this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
-   
+
     this.pipeGroup = this.physics.add.group();
     this.coinGroup = this.physics.add.group();
 
@@ -52,24 +52,24 @@ class Game extends Phaser.Scene {
     // setting score
     this.timedEvent = this.time.addEvent({
       delay: 1500,
-      callback: this.scoreIncrease, 
+      callback: this.scoreIncrease,
       callbackScope: this,
       loop: true,
       paused: false,
-    }); 
+    });
     this.scoreText = this.add.text(0, 0);
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(this.currentHeart, heartsArray); // test line
 
     // coin score counter
-    this.coinImg = this.physics.add.sprite(50, 50,"coin");
-    this.coinNumText = this.add.text(75,43,'X '+this.coinNum);
+    this.coinImg = this.physics.add.sprite(50, 50, "coin");
+    this.coinNumText = this.add.text(75, 43, 'X ' + this.coinNum);
 
     // reset local storage
     localStorage.setItem("currentCoin", 0);
     localStorage.setItem("currentScore", 0);
-    
+
     // add coin when true
     this.addNewCoin = false;
 
@@ -77,11 +77,11 @@ class Game extends Phaser.Scene {
     this.coinGroup = this.physics.add.group();
 
     // given random y value 
-    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height*0.25,game.config.height*0.75),"coin")
+    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
     this.coinGroup.setVelocityX(-this.gameSpeed);
 
-    this.coinSound = this.sound.add("coinSound", {loop: false}); 
-    
+    this.coinSound = this.sound.add("coinSound", { loop: false });
+
   }
 
   update() {
@@ -115,11 +115,11 @@ class Game extends Phaser.Scene {
 
     //Everytime the score increases by 10, increase the cat speed
     //if (this.score %10 == 0) {
-      //this.increaseCatSpeed();
+    //this.increaseCatSpeed();
     //}
 
     //If catspeed reaches threshold update the texture
-    if(this.gameSpeed == 140){
+    if (this.gameSpeed == 140) {
       this.cat.setTexture("boosted-cat");
     }
 
@@ -272,8 +272,8 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    if (this.gameSpeed < 200){
-      this.gameSpeed+=5;
+    if (this.gameSpeed < 200) {
+      this.gameSpeed += 5;
     }
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
