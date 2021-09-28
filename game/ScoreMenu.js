@@ -29,7 +29,9 @@ class ScoreMenu extends Phaser.Scene {
         this.r1 = this.add.rectangle(300, 400, 520, 520, 0x000000);
         this.r1.alpha = 0.3;
 
+        // Exit button
         this.exitBtn = this.add.image(300, 730, 'exit');
+        // button functions
         this.exitBtn.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 this.scene.start('MainMenu');
@@ -41,18 +43,19 @@ class ScoreMenu extends Phaser.Scene {
                 this.exitBtn.setTint(0xffffff)
             });
 
+        // create all score
+        // currently made just to check the layout
         this.ScoreGroup = this.physics.add.group();
         for (let i = 1; i < 11; i++) {
-            this.ScoreGroup.create(this.add.text(70, 105+(this.spacing*i), i ,{ fontSize: 50,textAlign: "Left"}));
+            this.ScoreGroup.create(this.add.text(70, 105 + (this.spacing * i), i, { fontSize: 50, textAlign: "Right" }));
         }
 
     }
 
-
     update() {
+        // movement for background sprites
         this.moveSprites(this.menuState.bgMove);
     }
-
 
     /**
      * takes an array of sprites and loops through them
@@ -69,34 +72,5 @@ class ScoreMenu extends Phaser.Scene {
                 s.x += 1;
             }
         })
-    }
-
-    btnEffects(buttons) {
-        buttons.forEach((btn, i) => {
-            btn.setInteractive();
-            btn.alpha = 0.5;
-
-            btn.on('pointerdown', () => {
-                this.scene.stop('GameOver');
-                switch (i) {
-                    case 0: {
-                        this.scene.start('Game');
-                        break;
-                    }
-                    case 1: {
-                        this.scene.start('MainMenu');
-                        break;
-                    }
-                }
-            })
-
-            btn.on('pointerover', function () {
-                btn.alpha = 1;
-            });
-
-            btn.on('pointerout', function () {
-                btn.alpha = 0.5;
-            });
-        });
     }
 }
