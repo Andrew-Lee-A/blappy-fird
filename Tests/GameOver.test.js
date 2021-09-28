@@ -1,5 +1,5 @@
 const { test } = require('@jest/globals');
-const GameOverController = require('../game/controllers/GameController');
+const GameOverController = require('../game/Controller/GameController');
 
 test('spacing returned correct y padding value', () => {
     const gameOver = new GameOverController();
