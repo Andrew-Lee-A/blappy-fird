@@ -1,7 +1,7 @@
 class ShopMenu extends Phaser.Scene {
     constructor() {
         super({key: 'ShopMenu'});
-        this.skins = ['default-skin', 'green-skin'];
+        this.skins = ['default-skin', 'frog-skin', 'bear-skin'];
         this.skinIndex = 0;
     }
 
@@ -12,7 +12,8 @@ class ShopMenu extends Phaser.Scene {
         this.load.image("equip", "assets/shop/equip.png");
 
         // alternative skins
-        this.load.image("green-skin", "assets/shop/green-skin.png");
+        this.load.image("frog-skin", "assets/shop/frog-skin.png");
+        this.load.image("bear-skin", "assets/shop/bear-skin.png");
     }
 
     create() {
@@ -91,6 +92,10 @@ class ShopMenu extends Phaser.Scene {
 
     displayNoMoreSkins(shakeDuration, shakeIntensity) {
         this.cameras.main.shake(shakeDuration, shakeIntensity);
+    }
+
+    updateActionBtn(actionBtn) {
+        
     }
 
     getShopItems() {
