@@ -1,12 +1,44 @@
 /** @type {import("../typing/phaser")} */
 
-/** @type {import("../typing/phaser")} */
 
 class DataStorage {
 
     constructor() {
         this.score = new Score();
+        this.unlockable = new Unlockable();
     }
+
+    // return array of unlocks
+    getUnlocks() {
+        return this.unlockable.unlocked;
+    }
+
+    // unlocks skins
+    unlockSkin(skin) {
+        if (skin === 1 || skin === 2) {
+            localStorage.setItem("skin" + skin, true);
+        }
+        else {
+            console.log('error');
+        }
+    }
+
+    // get current skin return int
+    getCurrentSkin() {
+        return this.unlockable.currentSkin;
+    }
+
+    // set current skin takes int 0-2
+    setCurrentSkin(skin) {
+        let array = this.getUnlocks();
+        if (array[skin] === 'true') {
+            this.unlockable.currentSkin = skin;
+            localStorage.setItem("currentSkin" , skin);
+        } else {
+            console.log('Need to unlock');
+        }
+    }
+
     getCoin() {
         return parseInt(localStorage.getItem('coin')) || 0;
     }
@@ -28,14 +60,14 @@ class DataStorage {
                     localStorage.setItem('laserScore', score)
                 }
                 break;
-    
+
             case 'classic':
                 if (this.score._classicScore < score) {
                     this.score._classicScore = score;
                     localStorage.setItem('classicScore', score)
                 }
                 break;
-    
+
             case 'gun':
                 if (this.score._gunScore < score) {
                     this.score._gunScore = score;
@@ -58,7 +90,7 @@ class DataStorage {
 
             case 'gun':
                 return this.score._gunScore;
-                
+
             default:
                 break;
         }
