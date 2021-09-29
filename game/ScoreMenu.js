@@ -11,7 +11,7 @@ class ScoreMenu extends Phaser.Scene {
         this.load.image('player-blue', '../assets/images/menu/player-blue-sprite.png');
         this.load.image('player-green', '../assets/images/menu/player-green-sprite.png');
 
-        this.load.image('title', '../assets/images/menu/title.png');
+        this.load.image('leaderboard', '../assets/images/menu/leaderboard.png');
         this.load.image('exit', '../assets/game-over/exit.png');
     }
 
@@ -22,8 +22,8 @@ class ScoreMenu extends Phaser.Scene {
         this.menuState.bgMove[1] = this.add.sprite(-200, Math.random() * config.height, 'player-blue');
         this.menuState.bgMove[2] = this.add.sprite(-300, Math.random() * config.height, 'player-green');
 
-        const titleSize = { width: 360, height: 67 };
-        this.menuState.title = this.add.sprite(((config.width - titleSize.width) / 2) + (titleSize.width / 2), titleSize.height, 'title');
+        const titleSize = { width: 420, height: 62 };
+        this.menuState.title = this.add.sprite(((config.width - titleSize.width) / 2) + (titleSize.width / 2), titleSize.height, 'leaderboard');
 
         // transaprent background
         this.r1 = this.add.rectangle(300, 400, 520, 520, 0x000000);
