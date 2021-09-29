@@ -4,7 +4,7 @@ import Unlockable from './Unlockable';
 
 class Player {
     constructor() {
-        this._numCoins = parseInt(localStorage.getItem('coin')) || 0;;
+        this._numCoins = parseInt(localStorage.getItem('coin')) || 0;
         this._unlocks = new Unlockable();
         this._score = new Score();
     }
