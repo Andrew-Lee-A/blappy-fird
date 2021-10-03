@@ -23,6 +23,12 @@ class DataStorage {
         }
     }
 
+    lockAllSkins() {
+        for(let i = 1; i < 3; i++) {
+            localStorage.setItem("skin" + i, false);
+        }
+    }
+
     // get current skin return int
     getCurrentSkin() {
         return this.unlockable.currentSkin;
@@ -31,11 +37,10 @@ class DataStorage {
     // set current skin takes int 0-2
     setCurrentSkin(skin) {
         let array = this.getUnlocks();
-        if (array[skin] === 'true') {
+
+        if(skin < array.length && skin >= 0) {
             this.unlockable.currentSkin = skin;
             localStorage.setItem("currentSkin" , skin);
-        } else {
-            console.log('Need to unlock');
         }
     }
 

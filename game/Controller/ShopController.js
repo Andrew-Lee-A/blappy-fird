@@ -1,5 +1,6 @@
 class ShopController {
     constructor() {
+        this.data = new DataStorage();
     }
 
     shopMenuSpacing(width, height, arrowDimensions, spriteSpace) {
@@ -61,6 +62,41 @@ class ShopController {
             valid = false;
         }
         return valid;
+    }
+
+    /**
+     * takes a height of the window to allocate a home buttons coordinates
+     * note assumes that the width must be exponetially greater than 50px...
+     * @param {*} height 
+     * @returns 
+     */
+    getHomePos(height) {
+        if(Number.isInteger(height) && height >= 50) {
+            return {x: 50, y: height - 50};
+        } 
+        return null;
+    }
+
+    /**
+     * set the skin based on input index
+     * @param {} skinIndex 
+     */
+    setSkin(skinIndex) {
+        this.data.setCurrentSkin(skinIndex);
+    }
+
+    /**
+     * takes a positive number representing a skin cost and
+     * deducts the coin for the storage, and unlocks the skin 
+     * @param {} skinIndex 
+     * @param {*} skinCost 
+     */
+    unlockSkin(skinIndex, skinCost) {
+        if(skinCost < 0) {
+            throw "Skins cost should be a positive value";
+        }
+        this.data.setCoin(-skinCost);
+        this.data.unlockSkin(skinIndex);
     }
 }
 
