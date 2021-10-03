@@ -36,9 +36,6 @@ class ShopMenu extends Phaser.Scene {
         const spacing = this.shopController.shopMenuSpacing(config.width, config.height, ARROW_DIMENSIONS, SPRITE_SPACING);
         const data = new DataStorage();
 
-        data.lockAllSkins();
-        data.setCoin(100);
-
         this.skinIndex = 0; // important for when scene restarts...
         this.title = this.add.text(spacing.titleLocation.x, spacing.titleLocation.y, 'SHOP / EQUIP', {font: '70px'});
 
