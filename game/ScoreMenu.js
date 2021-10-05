@@ -45,16 +45,66 @@ class ScoreMenu extends Phaser.Scene {
 
         // create all score
         // currently made just to check the layout
-        this.ScoreGroup = this.physics.add.group();
-        for (let i = 1; i < 11; i++) {
-            this.ScoreGroup.create(this.add.text(70, 105 + (this.spacing * i), i, { fontSize: 50, textAlign: "Right" }));
+        this.ScorePlacement = this.physics.add.group();
+        this.ScoreName = this.physics.add.group();
+        this.ScoreValue = this.physics.add.group();
+        this.createScores();
+        this.updateScores();
+        for (let i = 0; i < 10; i++) {
+            this.ScorePlacement.create(this.add.text(65, 155 + (this.spacing * i), i+1 +")", { fontSize: 50, textAlign: "Right" }));
+            this.ScoreName.create(this.add.text(155, 155 + (this.spacing * i), this.scores[i][0], { fontSize: 50, textAlign: "Right" }));
+            this.ScoreValue.create(this.add.text(460, 155 + (this.spacing * i), this.scores[i][1], { fontSize: 50, textAlign: "Right" }));
         }
+
+
 
     }
 
     update() {
         // movement for background sprites
         this.moveSprites(this.menuState.bgMove);
+    }
+
+    createScores(){
+        this.scores = [
+            ['Matthew', 999],
+            ['Deni', 900],
+            ['Firb', 800],
+            ['Rhys',700],
+            ['Victor',600],
+            ['Andrew',500],
+            ['Gerard',400],
+            ['Tyrell',300],
+            ['Jambo',200],
+            ['Jameson',100]
+        ];
+        // this.scores = [
+        //     ['Jameson',100],
+        //     ['Jambo',200],
+        //     ['Tyrell',300],
+        //     ['Gerard',400],
+        //     ['Andrew',500],
+        //     ['Victor',600],
+        //     ['Rhys',700],
+        //     ['Firb', 800],
+        //     ['Deni', 900],
+        //     ['Matthew', 999]
+        // ];
+    }
+
+    updateScores(){
+        let data = new DataStorage();
+        let score = data.getScore('classic');
+        let array = ['You',score]
+        console.log(score);
+        for (let i = 0; i <10; i++) {
+            if(score > this.scores[i][1]){
+                console.log(true);
+                this.scores.splice(i,0,array);
+                this.scores.splice(10,1);
+                break;
+            }
+        }
     }
 
     /**
