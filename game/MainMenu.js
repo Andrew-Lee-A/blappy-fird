@@ -4,6 +4,7 @@ class MainMenu extends Phaser.Scene {
     constructor() {
         super({key: 'MainMenu'});
         this.menuState = {};
+        this.gameEvents = new Array("Game", "Gravity");
     }
 
     preload() {
@@ -137,11 +138,11 @@ class MainMenu extends Phaser.Scene {
             });
 
             btn.on('pointerdown', () => {
-
+                const gameController = new GameController();
                 this.scene.stop('MainMenu');
                 switch(i) {
                     case 0: {
-                     this.scene.start('Game');
+                     this.scene.start(gameController.selectGameEvent(this.gameEvents));
                      break;   
                     }
                     case 1: {
