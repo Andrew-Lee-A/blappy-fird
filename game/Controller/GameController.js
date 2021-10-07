@@ -1,6 +1,18 @@
 class GameController {
     
     /**
+     * @param String[] an array of strings for the event
+     * @return String, the selected string 
+     */
+    selectGameEvent(gameEvents) {
+        if(gameEvents instanceof Array && gameEvents.length >= 1) {
+        let selected = Math.floor(Math.random() * gameEvents.length);
+        return gameEvents[selected];
+        }
+        throw "invalid game event array passed";
+    }
+
+    /**
      * returns the correct spacing
      * for game over buttons in the y direction if
      * invalid input provided i.e. -1 spacing returns null
