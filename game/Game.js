@@ -12,6 +12,7 @@ class Game extends Phaser.Scene {
     this.load.image("cat", "assets/images/player-spriteS.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
+    this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
     this.load.image("boosted-cat", "assets/images/boosted-player.png")
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
