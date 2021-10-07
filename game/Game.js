@@ -9,7 +9,11 @@ class Game extends Phaser.Scene {
   }
 
   preload() {
+    // load character skins
     this.load.image("cat", "assets/images/player-spriteS.png");
+    this.load.image("bear", "assets/images/bear-skin.png");
+    this.load.image("frog", "assets/images/frog-skin.png");
+
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
@@ -40,7 +44,7 @@ class Game extends Phaser.Scene {
 
     const NUM_HEARTS = 3;
 
-    this.cat = this.physics.add.sprite(80, game.config.height / 2, "cat");
+    this.cat = this.physics.add.sprite(80, game.config.height / 2, this.getCharacterSkin());
     this.cat.body.gravity.y = gameOptions.catGravity;
     this.input.on("pointerdown", this.flap, this);
 
@@ -209,11 +213,6 @@ class Game extends Phaser.Scene {
     //this.increaseCatSpeed();
     //}
 
-    //If catspeed reaches threshold update the texture
-    if (this.gameSpeed == 140) {
-      this.cat.setTexture("boosted-cat");
-    }
-
     // coin collision on pickup
     this.physics.add.overlap(
       this.cat,
@@ -378,5 +377,33 @@ class Game extends Phaser.Scene {
   unmuteAll(){
     this.backgroundMusic.mute = false;
     this.coinSound.mute = false;
+  }
+
+  /**
+   * returns the character string to set the 
+   * avatar of the character to...
+   */
+  getCharacterSkin(){
+    const data = new DataStorage();
+    let skinIndex = data.getCurrentSkin();
+
+    let skinKey = "";
+    switch(skinIndex) {
+      case 0: 
+        skinKey = "cat";
+        break;
+      case 1:
+        skinKey = "bear";
+        break;
+      case 2:
+        skinKey = "frog";
+        break;
+    }
+    
+    if(skinKey === "") {
+      throw "ERROR skin key not found...";
+    }
+
+    return skinKey;
   }
 }
