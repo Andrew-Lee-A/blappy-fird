@@ -43,6 +43,7 @@ class Game extends Phaser.Scene {
     this.backgroundMusic.play();
 
     const NUM_HEARTS = 3;
+    const ANIMATION_DURATION = 250;
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, this.getCharacterSkin());
     this.cat.body.gravity.y = gameOptions.catGravity;
@@ -55,6 +56,8 @@ class Game extends Phaser.Scene {
     this.coinGroup = this.physics.add.group();
 
     this.pipePool = [];
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // add pipes on screen
     for (let i = 0; i < 4; i++) {
