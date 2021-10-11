@@ -11,8 +11,14 @@ class Game extends Phaser.Scene {
   preload() {
     // load character skins
     this.load.image("cat", "assets/images/player-spriteS.png");
-    this.load.image("bear", "assets/images/bear-skin.png");
-    this.load.image("frog", "assets/images/frog-skin.png");
+    this.load.spritesheet("bear", "assets/images/bear-skin.png", {
+      frameWidth: 49,
+      frameHeight: 44,
+    });
+    this.load.spritesheet("frog", "assets/images/frog-skin.png", {
+      frameWidth: 49,
+      frameHeight: 44,
+    });
 
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
@@ -35,7 +41,7 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.playerAnimation = false; // if the player is animating... needs to be set here
+    this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
     //add and play the back ground music
@@ -45,11 +51,15 @@ class Game extends Phaser.Scene {
     const NUM_HEARTS = 3;
     const ANIMATION_DURATION = 250;
 
-    this.cat = this.physics.add.sprite(80, game.config.height / 2, this.getCharacterSkin());
+    this.skinKey = this.getCharacterSkin();
+    this.cat = this.physics.add.sprite(80, game.config.height / 2, this.skinKey);
     this.cat.body.gravity.y = gameOptions.catGravity;
+
+    // add animations
+    this.addUniqueCharacterAnimation(2000);
     this.input.on("pointerdown", () => {
       this.flap();
-      this.addCharacterAnimation(250);
+      this.addCharacterAnimation(ANIMATION_DURATION);
     });
 
     this.pipeGroup = this.physics.add.group();
@@ -413,8 +423,8 @@ class Game extends Phaser.Scene {
     return skinKey;
   }
 
-  addCharacterAnimation(animeDuration, release){
-    if(this.playerAnimation == false) {
+  addCharacterAnimation(animeDuration) {
+    if(this.playerAnimation == false) { // basic rotation animation
       this.playerAnimation = true; // lock animation
       setTimeout(() => {this.playerAnimation = false}, animeDuration * 2);
       console.log(this.playerAnimation);
@@ -431,5 +441,27 @@ class Game extends Phaser.Scene {
         }
       })
     }
+  }
+
+  addUniqueCharacterAnimation() {
+    if(this.skinKey === 'bear') {
+
+      this.anims.create({
+        key: 'bear-anime',
+        frames: this.anims.generateFrameNames('bear'),
+        frameRate: 2,
+        repeat: -1
+      })
+      this.cat.play('bear-anime');
+    } else if (this.skinKey === 'frog') {
+
+      this.anims.create({
+        key: 'frog-anime',
+        frames: this.anims.generateFrameNames('frog'),
+        frameRate: 2,
+        repeat: -1
+      })
+      this.cat.play('frog-anime');
+    } // else default skin... has no animation
   }
 }
