@@ -35,7 +35,7 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-
+    this.playerAnimation = false; // if the player is animating... needs to be set here
     this.gameSpeed = gameOptions.catSpeed;
 
     //add and play the back ground music
@@ -46,7 +46,10 @@ class Game extends Phaser.Scene {
 
     this.cat = this.physics.add.sprite(80, game.config.height / 2, this.getCharacterSkin());
     this.cat.body.gravity.y = gameOptions.catGravity;
-    this.input.on("pointerdown", this.flap, this);
+    this.input.on("pointerdown", () => {
+      this.flap();
+      this.addCharacterAnimation(250);
+    });
 
     this.pipeGroup = this.physics.add.group();
     this.coinGroup = this.physics.add.group();
@@ -405,5 +408,25 @@ class Game extends Phaser.Scene {
     }
 
     return skinKey;
+  }
+
+  addCharacterAnimation(animeDuration, release){
+    if(this.playerAnimation == false) {
+      this.playerAnimation = true; // lock animation
+      setTimeout(() => {this.playerAnimation = false}, animeDuration * 2);
+      console.log(this.playerAnimation);
+      this.tweens.add({
+        targets: this.cat,
+        angle: -60,
+        ease: 'linear',
+        duration: animeDuration,
+        repeat: 0,
+        yoyo: true,
+        
+        onRepeat: function() {
+            this.cat.angle += 1;
+        }
+      })
+    }
   }
 }
