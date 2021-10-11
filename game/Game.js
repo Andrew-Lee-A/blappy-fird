@@ -423,6 +423,11 @@ class Game extends Phaser.Scene {
     return skinKey;
   }
 
+  /**
+   * add the generic character animation that is for
+   * all character skins
+   * @param {*} animeDuration 
+   */
   addCharacterAnimation(animeDuration) {
     if(this.playerAnimation == false) { // basic rotation animation
       this.playerAnimation = true; // lock animation
@@ -443,6 +448,9 @@ class Game extends Phaser.Scene {
     }
   }
 
+  /**
+   * add the unique character animation depending on the selected skin
+   */
   addUniqueCharacterAnimation() {
     if(this.skinKey === 'bear') {
 
