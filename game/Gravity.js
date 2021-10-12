@@ -12,8 +12,14 @@ class Gravity extends Phaser.Scene {
     preload() {
         // load character skins
         this.load.image("cat", "assets/images/player-spriteS.png");
-        this.load.image("bear", "assets/images/bear-skin.png");
-        this.load.image("frog", "assets/images/frog-skin.png");
+        this.load.spritesheet("bear", "assets/images/bear-skin.png", {
+            frameWidth: 49,
+            frameHeight: 44,
+        });
+        this.load.spritesheet("frog", "assets/images/frog-skin.png", {
+            frameWidth: 49,
+            frameHeight: 44,
+        });
 
         this.load.image("pipe", "assets/images/default-pipe-sprite.png");
         this.load.image("coin", "assets/images/ticket-sprite.png");
@@ -35,6 +41,7 @@ class Gravity extends Phaser.Scene {
     }
 
     create() {
+        this.playerAnimation = false; // must be set here for scene rebuild
         this.gameSpeed = gameOptions.catSpeed;
 
         //add and play the back ground music
@@ -42,10 +49,20 @@ class Gravity extends Phaser.Scene {
         this.backgroundMusic.play();
 
         const NUM_HEARTS = 3;
+        const ANIMATION_DURATION = 250;
 
-        this.cat = this.physics.add.sprite(80, game.config.height / 2, this.getCharacterSkin());
-        this.cat.flipY=true;
+        this.skinKey = this.getCharacterSkin();
+        this.cat = this.physics.add.sprite(80, game.config.height / 2, this.skinKey);
         this.cat.body.gravity.y = -gameOptions.catGravity;
+        this.cat.flipY = true;
+
+        // add animations
+        this.addUniqueCharacterAnimation(2000);
+        this.input.on("pointerdown", () => {
+            this.flap();
+            this.addCharacterAnimation(ANIMATION_DURATION);
+        });
+
         this.input.on("pointerdown", this.flap, this);
 
         this.pipeGroup = this.physics.add.group();
@@ -239,7 +256,7 @@ class Gravity extends Phaser.Scene {
                 delay: 1500,
                 callback: () => {
                     this.TitleMsg = false,
-                    this.killTitle(this.Title);
+                        this.killTitle(this.Title);
                 },
                 loop: true
             })
@@ -434,4 +451,54 @@ class Gravity extends Phaser.Scene {
 
         return skinKey;
     }
+
+      /**
+   * add the generic character animation that is for
+   * all character skins
+   * @param {*} animeDuration 
+   */
+  addCharacterAnimation(animeDuration) {
+    if(this.playerAnimation == false) { // basic rotation animation
+      this.playerAnimation = true; // lock animation
+      setTimeout(() => {this.playerAnimation = false}, animeDuration * 2);
+      console.log(this.playerAnimation);
+      this.tweens.add({
+        targets: this.cat,
+        angle: 60,
+        ease: 'linear',
+        duration: animeDuration,
+        repeat: 0,
+        yoyo: true,
+        
+        onRepeat: function() {
+            this.cat.angle += 1;
+        }
+      })
+    }
+  }
+
+  /**
+   * add the unique character animation depending on the selected skin
+   */
+  addUniqueCharacterAnimation() {
+    if(this.skinKey === 'bear') {
+
+      this.anims.create({
+        key: 'bear-anime',
+        frames: this.anims.generateFrameNames('bear'),
+        frameRate: 2,
+        repeat: -1
+      })
+      this.cat.play('bear-anime');
+    } else if (this.skinKey === 'frog') {
+
+      this.anims.create({
+        key: 'frog-anime',
+        frames: this.anims.generateFrameNames('frog'),
+        frameRate: 2,
+        repeat: -1
+      })
+      this.cat.play('frog-anime');
+    } // else default skin... has no animation
+  }
 }
