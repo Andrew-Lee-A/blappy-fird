@@ -151,8 +151,13 @@ class Gravity extends Phaser.Scene {
             })
 
         //mute button
-        this.isMuteflag = false;
-        this.muteButton = this.add.image(game.config.width - 130, game.config.height - 30, "muteButton");
+        let data = new DataStorage();
+        if (data.getAudio()) {
+            this.muteButton = this.add.image(game.config.width - 130, game.config.height - 30, "muteButton");
+        } else {
+            this.muteAll();
+            this.muteButton = this.add.image(game.config.width - 130, game.config.height - 30, "unmuteButton");
+        }
         this.muteButton.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
                 this.muteButton.setTint(0xdedede)
@@ -162,13 +167,11 @@ class Gravity extends Phaser.Scene {
             })
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
                 this.muteButton.setTint(0x8afbff)
-                if (this.isMuteflag == false) {
+                if (data.getAudio()) {
                     this.muteButton.setTexture("unmuteButton");
-                    this.isMuteflag = true;
                     this.muteAll();
-                } else if (this.isMuteflag == true) {
+                } else if (!data.getAudio()) {
                     this.muteButton.setTexture("muteButton");
-                    this.isMuteflag = false;
                     this.unmuteAll();
                 }
             })
@@ -452,53 +455,53 @@ class Gravity extends Phaser.Scene {
         return skinKey;
     }
 
-      /**
-   * add the generic character animation that is for
-   * all character skins
-   * @param {*} animeDuration 
-   */
-  addCharacterAnimation(animeDuration) {
-    if(this.playerAnimation == false) { // basic rotation animation
-      this.playerAnimation = true; // lock animation
-      setTimeout(() => {this.playerAnimation = false}, animeDuration * 2);
-      console.log(this.playerAnimation);
-      this.tweens.add({
-        targets: this.cat,
-        angle: 60,
-        ease: 'linear',
-        duration: animeDuration,
-        repeat: 0,
-        yoyo: true,
-        
-        onRepeat: function() {
-            this.cat.angle += 1;
+    /**
+ * add the generic character animation that is for
+ * all character skins
+ * @param {*} animeDuration 
+ */
+    addCharacterAnimation(animeDuration) {
+        if (this.playerAnimation == false) { // basic rotation animation
+            this.playerAnimation = true; // lock animation
+            setTimeout(() => { this.playerAnimation = false }, animeDuration * 2);
+            console.log(this.playerAnimation);
+            this.tweens.add({
+                targets: this.cat,
+                angle: 60,
+                ease: 'linear',
+                duration: animeDuration,
+                repeat: 0,
+                yoyo: true,
+
+                onRepeat: function () {
+                    this.cat.angle += 1;
+                }
+            })
         }
-      })
     }
-  }
 
-  /**
-   * add the unique character animation depending on the selected skin
-   */
-  addUniqueCharacterAnimation() {
-    if(this.skinKey === 'bear') {
+    /**
+     * add the unique character animation depending on the selected skin
+     */
+    addUniqueCharacterAnimation() {
+        if (this.skinKey === 'bear') {
 
-      this.anims.create({
-        key: 'bear-anime',
-        frames: this.anims.generateFrameNames('bear'),
-        frameRate: 2,
-        repeat: -1
-      })
-      this.cat.play('bear-anime');
-    } else if (this.skinKey === 'frog') {
+            this.anims.create({
+                key: 'bear-anime',
+                frames: this.anims.generateFrameNames('bear'),
+                frameRate: 2,
+                repeat: -1
+            })
+            this.cat.play('bear-anime');
+        } else if (this.skinKey === 'frog') {
 
-      this.anims.create({
-        key: 'frog-anime',
-        frames: this.anims.generateFrameNames('frog'),
-        frameRate: 2,
-        repeat: -1
-      })
-      this.cat.play('frog-anime');
-    } // else default skin... has no animation
-  }
+            this.anims.create({
+                key: 'frog-anime',
+                frames: this.anims.generateFrameNames('frog'),
+                frameRate: 2,
+                repeat: -1
+            })
+            this.cat.play('frog-anime');
+        } // else default skin... has no animation
+    }
 }
