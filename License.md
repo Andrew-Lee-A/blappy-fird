@@ -79,3 +79,7 @@ You are licensed to use the Item to create an End Product that incorporates the 
 You can’t redistribute the Item on its own, as stock, in a tool or template, or with source files. You’re also not allowed to claim them as your own or register them on any rights management service.
 
 There are some important limits to these rights, described in our User Terms.
+
+mixkit https://mixkit.co/license/
+
+Copyright © 2021. All rights reserved - Made by Envato Elements
