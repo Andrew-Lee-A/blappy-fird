@@ -3,6 +3,7 @@ class Settings extends Phaser.Scene {
         super({ key: 'Settings' });
         this.menuState = {};
         this.spacing = 50;
+        this.settingController = new SettingController();
     }
 
     preload() {
@@ -40,25 +41,27 @@ class Settings extends Phaser.Scene {
         this.exitBtn = this.add.image(300, 730, 'exit');
         // button functions
         this.exitBtn.setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                this.scene.start('MainMenu');
-            })
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-                this.exitBtn.setTint(0x808080)
-            })
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-                this.exitBtn.setTint(0xffffff)
-            });
-
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+            this.scene.start('MainMenu');
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+            this.exitBtn.setTint(0x808080)
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+            this.exitBtn.setTint(0xffffff)
+        });
+        
         this.add.text(50, 165, "Audio", { fontSize: 55, textAlign: "Right" });
         this.add.text(50, 235, "difficulty", { fontSize: 55, textAlign: "Right" });
         this.add.text(50, 440, "Event", { fontSize: 55, textAlign: "Right" });
         this.add.text(60, 30, "Settings", { fontSize: 95, textAlign: "Right" });
+        
         // buttons
         let data = new DataStorage();
+        let spacing = this.settingController.difficultyBtnSpacing(130,350,170);
         // difficulty
         // easy
-        this.easyBtn = this.add.image(130, 350, "easy");
+        this.easyBtn = this.add.image(spacing.easyLocation.x, spacing.easyLocation.y, "easy");
         this.easyBtn.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
                 this.easyBtn.setTint(0xdedede)
@@ -75,7 +78,7 @@ class Settings extends Phaser.Scene {
                 this.easyBtn.setTint(0xffffff)
             })
 
-        this.mediumBtn = this.add.image(300, 350, "medium");
+        this.mediumBtn = this.add.image(spacing.mediumLocation.x, spacing.mediumLocation.y, "medium");
         this.mediumBtn.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
                 this.mediumBtn.setTint(0xdedede)
@@ -92,7 +95,7 @@ class Settings extends Phaser.Scene {
                 this.mediumBtn.setTint(0xffffff)
             })
 
-        this.hardBtn = this.add.image(470, 350, "hard");
+        this.hardBtn = this.add.image(spacing.hardLocation.x, spacing.hardLocation.y, "hard");
         this.hardBtn.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
                 this.hardBtn.setTint(0xdedede)
