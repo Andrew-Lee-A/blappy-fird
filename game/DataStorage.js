@@ -37,6 +37,17 @@ class DataStorage {
         }
     }
 
+    getAudio(){
+        return parseInt(localStorage.getItem("audio") || 1);
+    }
+    setAudio() {
+        if(this.getAudio()=== 1) {
+            localStorage.setItem("audio", 0);
+        } else {
+            localStorage.setItem("audio", 1);
+        }
+    }
+
     // return array of unlocks
     getUnlocks() {
         return this.unlockable.unlocked;

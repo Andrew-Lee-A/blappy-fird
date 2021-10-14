@@ -148,8 +148,13 @@ class Game extends Phaser.Scene {
     })
 
     //mute button
-    this.isMuteflag = false;
-    this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
+    let data = new DataStorage();
+    if(data.getAudio()){
+      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
+    }else{
+      this.muteAll();
+      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "unmuteButton");
+    }
     this.muteButton.setInteractive()
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
       this.muteButton.setTint(0xdedede)
@@ -159,20 +164,17 @@ class Game extends Phaser.Scene {
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
       this.muteButton.setTint(0x8afbff)
-      if (this.isMuteflag == false){
+      if (data.getAudio()){
         this.muteButton.setTexture("unmuteButton");
-        this.isMuteflag = true;
         this.muteAll();
-      }else if (this.isMuteflag == true){
+      }else if (!data.getAudio()){
         this.muteButton.setTexture("muteButton");
-        this.isMuteflag = false;
         this.unmuteAll();
       }
     })
     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
       this.muteButton.setTint(0xffffff)
     })
-
 
     //home button
     this.homeButton = this.add.image(game.config.width-30, game.config.height-30, "homeButton");

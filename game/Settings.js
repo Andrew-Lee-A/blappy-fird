@@ -20,6 +20,9 @@ class Settings extends Phaser.Scene {
         this.load.image('gravity', '../assets/buttons/gravity.png');
         this.load.image('flip', '../assets/buttons/flip.png');
         this.load.image('random', '../assets/buttons/random.png');
+
+        this.load.image('muteButton', '../assets/buttons/audio_on.png');
+        this.load.image('unmuteButton', '../assets/buttons/audio_off.png');
     }
 
     create() {
@@ -174,6 +177,36 @@ class Settings extends Phaser.Scene {
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
                 this.gravityBtn.setTint(0xffffff)
             })
+
+
+        // aduio  
+        if (data.getAudio()) {
+            this.muteButton = this.add.image(520, 190, "muteButton");
+        } else {
+            this.muteButton = this.add.image(520, 190, "unmuteButton");
+        }
+        this.muteButton.setInteractive()
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+            this.muteButton.setTint(0xdedede)
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+            this.muteButton.setTint(0xffffff)
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+            this.muteButton.setTint(0x8afbff)
+            if (data.getAudio()) {
+                data.setAudio();
+                this.muteButton.setTexture("unmuteButton");
+            } else if (!data.getAudio()) {
+                data.setAudio();
+                this.muteButton.setTexture("muteButton");
+            }
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+            this.muteButton.setTint(0xffffff)
+        })
+
+
     }
 
     update() {
