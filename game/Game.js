@@ -399,7 +399,7 @@ class Game extends Phaser.Scene {
       }
       break;
       case 2: {
-        maxSpeed = HARD_MAX_INCREASE;
+        maxSpeed = HARD_MAX_SPEED;
         incrementSpeed = HARD_SPEED_INCREASE;
       }
       break;
