@@ -113,10 +113,10 @@ class DataStorage {
                 }
                 break;
 
-            case 'gun':
-                if (this.score._gunScore < score) {
-                    this.score._gunScore = score;
-                    localStorage.setItem('gunScore', score)
+            case 'gravity':
+                if (this.score._gravityScore < score) {
+                    this.score._gravityScore = score;
+                    localStorage.setItem('gravityScore', score)
                 }
                 break;
             default:
@@ -133,8 +133,8 @@ class DataStorage {
             case 'classic':
                 return this.score._classicScore;
 
-            case 'gun':
-                return this.score._gunScore;
+            case 'gravity':
+                return this.score._gravityScore;
 
             default:
                 break;

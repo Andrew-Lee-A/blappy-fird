@@ -339,6 +339,14 @@ class Game extends Phaser.Scene {
       this.score = 0;
       this.coinNum = 0;
       this.backgroundMusic.stop();
+
+      // update score
+      // gametype must be specify in single quotation
+      let data = new DataStorage();
+
+      console.log("current classic score:"+data.getScore('classic'));
+      data.setScore('classic',this.score);
+      console.log("now score:"+data.getScore('classic'));
     } else {
       this.scene.start("Game");
       this.backgroundMusic.stop();
