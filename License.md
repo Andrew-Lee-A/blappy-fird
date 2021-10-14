@@ -61,16 +61,17 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Sound Effects under the Free license can be used in
-YouTube videos
-Social Media video posts
-Online marketing ads
-Educational Purposes
-Music videos
-Commercial projects
-Filmmaking
-Video games
-TV & Radio broadcasts
-CDs & DVDs
+
+* YouTube videos
+* Social Media video posts
+* Online marketing ads
+* Educational Purposes
+* Music videos
+* Commercial projects
+* Filmmaking
+* Video games
+* TV & Radio broadcasts
+* CDs & DVDs
 
 Items under the Mixkit Sound Effects Free License can be used in your commercial and non-commercial projects for free.
 
@@ -80,6 +81,6 @@ You can’t redistribute the Item on its own, as stock, in a tool or template, o
 
 There are some important limits to these rights, described in our User Terms.
 
-mixkit https://mixkit.co/license/
+mixkit(under Sound Effects Free License) https://mixkit.co/license/
 
 Copyright © 2021. All rights reserved - Made by Envato Elements
