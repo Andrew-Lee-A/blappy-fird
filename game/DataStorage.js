@@ -15,9 +15,25 @@ class DataStorage {
 
     setDifficulty(difficltyLevel) {
         if(difficltyLevel >= 0 && difficltyLevel <= 2) { // only three possible levels 0, 1, 2
-            localeStorage.setItem("difficulty", difficltyLevel);
+            localStorage.setItem("difficulty", difficltyLevel);
         } else {
             throw "Difficulty not in range 0 - 2";
+        }
+    }
+
+    // the event 0 random
+    // 1 is default
+    // 2 is gravity
+    // 3 is flip
+    getEvent() {
+        return parseInt(localStorage.getItem("eventType") || 0);
+    }
+
+    setEvent(eventType) {
+        if(eventType >= 0 && eventType <= 3) {
+            localStorage.setItem("eventType", eventType);
+        } else {
+            throw "Event not in range 0 - 3";
         }
     }
 
