@@ -381,9 +381,35 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    if (this.gameSpeed < 200) {
-      this.gameSpeed += 5;
+    const EASY_MAX_SPEED = 200;
+    const EASY_SPEED_INCREASE = 5;
+    const MEDIUM_MAX_SPEED = 300;
+    const MEDIUM_SPEED_INCREASE = 6;
+    const HARD_MAX_SPEED = 400;
+    const HARD_SPEED_INCREASE = 8;
+
+    let data = new DataStorage();
+    let difficultyLevel = data.getDifficulty();
+
+    let maxSpeed = EASY_MAX_SPEED
+    let incrementSpeed = EASY_SPEED_INCREASE;
+    switch(difficultyLevel) {
+      case 1: {
+        maxSpeed = MEDIUM_MAX_SPEED;
+        incrementSpeed = MEDIUM_SPEED_INCREASE;
+      }
+      break;
+      case 2: {
+        maxSpeed = HARD_MAX_INCREASE;
+        incrementSpeed = HARD_SPEED_INCREASE;
+      }
+      break;
     }
+
+    if (this.gameSpeed < maxSpeed) {
+      this.gameSpeed += incrementSpeed;
+    }
+    
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
   }
