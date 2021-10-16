@@ -19,7 +19,7 @@ class Game extends Phaser.Scene {
       frameWidth: 49,
       frameHeight: 44,
     });
-
+    this.load.image("bg_test", "assets/images/bgplaceholder.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
@@ -31,7 +31,7 @@ class Game extends Phaser.Scene {
     });
     this.load.audio("background audio", "assets/audio/Child's Nightmare.wav");
     this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
-
+    
     //UI Buttons
     this.load.image("resumeButton", "assets/buttons/resume.png");
     this.load.image("pauseButton", "assets/buttons/pause.png");
@@ -39,22 +39,25 @@ class Game extends Phaser.Scene {
     this.load.image("muteButton", "assets/buttons/audio_on.png");
     this.load.image("unmuteButton", "assets/buttons/audio_off.png");
   }
-
+  
   create() {
+    this.background = this.add.tileSprite(0,0, game.config.width, game.config.height, "bg_test");
+    this.background.setOrigin(0,0);
+    this.background.setScrollFactor(0);
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
-
+    
     //add and play the back ground music
     this.backgroundMusic = this.sound.add("background audio");
     this.backgroundMusic.play();
-
+    
     const NUM_HEARTS = 3;
     const ANIMATION_DURATION = 250;
-
+    
     this.skinKey = this.getCharacterSkin();
     this.cat = this.physics.add.sprite(80, game.config.height / 2, this.skinKey);
     this.cat.body.gravity.y = gameOptions.catGravity;
-
+    
     // add animations
     this.addUniqueCharacterAnimation(2000);
     this.input.on("pointerdown", () => {
