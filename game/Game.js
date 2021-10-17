@@ -304,6 +304,9 @@ class Game extends Phaser.Scene {
     this.powerUpGroup.clear(this.powerUpGroup);
 
     this.addNewPowerUp = true;
+
+    this.applyReduceSpeedPowerUp();
+
   }
 
   addCoin() {
@@ -461,29 +464,28 @@ class Game extends Phaser.Scene {
     this.coinSound.mute = false;
   }
 
-  // applyReduceSpeedPowerUp(){
-    
-  // }
+  applyReduceSpeedPowerUp(){
+    this.currentGameSpeed = this.gameSpeed
+    this.gameSpeed = this.currentGameSpeed * 0.5 
+    this.speedTime = this.time.delayedCall(5000, this.unapplyReduceSpeedPowerUp, [this.currentGameSpeed], this);
+  }
 
-  // unapplyReduceSpeedPowerUp(){
+  unapplyReduceSpeedPowerUp(CurrentGameSpeed){
+    this.gameSpeed = CurrentGameSpeed
+  }
 
-  // }
+  applyShrinkAvatarPowerUp(){
+    this.cat.setScale(0.5);
 
-  // applyShrinkAvatarPowerUp(){
-  //   this.cat.sprite.setScale(0.2);
-    
-  //   this.timedEvent = this.time.addEvent({
-  //     delay: 4000,
-  //     callback: this.unapplyShrinkAvatarPowerUp(),
-  //     callbackScope: this,
-  //     loop: false,
-  //     paused: false,
-  //   });
-  // }
+    console.log("Shrink activated");
 
-  // unapplyShrinkAvatarPowerUp(speed){
-  //   this.cat.sprite.setScale(1)
-  // }
+    this.shrinkTime = this.time.delayedCall(5000, this.unapplyShrinkAvatarPowerUp, [], this);
+  }
+
+  unapplyShrinkAvatarPowerUp(speed){
+    console.log("Unshrink activated");
+    this.cat.setScale(1);
+  }
 
   /**
    * returns the character string to set the 
