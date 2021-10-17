@@ -43,7 +43,7 @@ class Game extends Phaser.Scene {
   create() {
     this.background = this.add.tileSprite(0,0, game.config.width, game.config.height, "bg_test");
     this.background.setOrigin(0,0);
-    this.background.setScrollFactor(0);
+    
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
     
@@ -65,13 +65,12 @@ class Game extends Phaser.Scene {
       this.addCharacterAnimation(ANIMATION_DURATION);
     });
 
-    this.pipeGroup = this.physics.add.group();
-    this.coinGroup = this.physics.add.group();
-
+    
     this.pipePool = [];
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    this.pipeGroup = this.physics.add.group();
     // add pipes on screen
     for (let i = 0; i < 4; i++) {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
@@ -92,30 +91,43 @@ class Game extends Phaser.Scene {
     // add hearts
     const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
     this.setHearts(this.currentHeart, heartsArray); // test line
-
+    
     // coin score counter
     this.coinImg = this.physics.add.sprite(50, 50, "coin");
     this.coinNumText = this.add.text(75, 43, 'X ' + this.coinNum);
-
+    
     // reset local storage
     localStorage.setItem("currentCoin", 0);
     localStorage.setItem("currentScore", 0);
+    
+    // create first powerUpSpawn
+    this.powerUpGroup = this.physics.add.group();
 
+    this.addNewPowerUp = false;
+
+    // setting a timer for powerUp spawn
+    this.powerSpawnEvent = this.time.addEvent({
+       delay: 15000,
+       callback: this.addPowerUp,
+       callbackScope: this,
+       loop: true,
+       paused: false,
+     });
     // add coin when true
     this.addNewCoin = false;
-
+    
     // create first coin 
     this.coinGroup = this.physics.add.group();
-
+    
     // given random y value 
     this.coinGroup.create(1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
     this.coinGroup.setVelocityX(-this.gameSpeed);
-
+    
     this.coinSound = this.sound.add("coinSound", {loop: false}); 
-
+    
     //this.scene.launch(UIScene);
-
-
+    
+    
     //pause button
     this.isPauseflag = false;
     this.pauseButton = this.add.image(game.config.width-80, game.config.height-30, "pauseButton");
@@ -199,6 +211,7 @@ class Game extends Phaser.Scene {
   }
 
   update() {
+    this.background.tilePositionX += 0.5;
     this.scoreText.setText("Score: " + this.score);
     this.physics.world.collide(
       this.cat,
@@ -231,8 +244,14 @@ class Game extends Phaser.Scene {
     //if (this.score %10 == 0) {
     //this.increaseCatSpeed();
     //}
-
-    // coin collision on pickup
+    this.physics.add.overlap(
+      this.cat,
+      this.powerUpGroup,
+      this.hitPowerUp,
+      null,
+      this
+    )
+    // cat collision on pickup
     this.physics.add.overlap(
       this.cat,
       this.coinGroup,
@@ -250,10 +269,12 @@ class Game extends Phaser.Scene {
       }
     }, this);
   }
+
   scoreIncrease() {
     this.score += 10;
     this.increaseCatSpeed();
   }
+
   getEvents() {
     // create all event obj
   }
@@ -261,6 +282,7 @@ class Game extends Phaser.Scene {
   pickEvent() {
     // pick a random event from event objs
   }
+
   hitCoin() {
     this.coinSound.play();
 
@@ -278,6 +300,12 @@ class Game extends Phaser.Scene {
     localStorage.setItem("currentCoin", this.coinNum);
   }
 
+  hitPowerUp(){
+    this.powerUpGroup.clear(this.powerUpGroup);
+
+    this.addNewPowerUp = true;
+  }
+
   addCoin() {
     this.coinGroup.create(
       900,
@@ -287,9 +315,15 @@ class Game extends Phaser.Scene {
     this.coinGroup.setVelocityX(-this.gameSpeed);
   }
 
+  addPowerUp(){
+    this.powerUpGroup.create(900, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "powerUp");
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
+  }
+
   flap() {
     this.cat.body.velocity.y = -gameOptions.catFlapPower;
   }
+
   placePipes() {
     let rightmost = this.getRightMostPipe();
     let pipeHoleHeight = Phaser.Math.Between(
@@ -316,6 +350,7 @@ class Game extends Phaser.Scene {
     this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
+
   getRightMostPipe() {
     let rightmostPipe = 0;
     this.pipeGroup.getChildren().forEach(function (pipe) {
