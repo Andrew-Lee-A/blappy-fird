@@ -447,6 +447,8 @@ class Game extends Phaser.Scene {
     
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
+    //change powerup game speed
+
   }
 
   muteAll(){
@@ -458,6 +460,30 @@ class Game extends Phaser.Scene {
     this.backgroundMusic.mute = false;
     this.coinSound.mute = false;
   }
+
+  // applyReduceSpeedPowerUp(){
+    
+  // }
+
+  // unapplyReduceSpeedPowerUp(){
+
+  // }
+
+  // applyShrinkAvatarPowerUp(){
+  //   this.cat.sprite.setScale(0.2);
+    
+  //   this.timedEvent = this.time.addEvent({
+  //     delay: 4000,
+  //     callback: this.unapplyShrinkAvatarPowerUp(),
+  //     callbackScope: this,
+  //     loop: false,
+  //     paused: false,
+  //   });
+  // }
+
+  // unapplyShrinkAvatarPowerUp(speed){
+  //   this.cat.sprite.setScale(1)
+  // }
 
   /**
    * returns the character string to set the 
