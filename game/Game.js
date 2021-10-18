@@ -42,7 +42,6 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor("#57D9CD");
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
@@ -261,7 +260,7 @@ class Game extends Phaser.Scene {
     this.addNewPowerUp = true;
     let powerUp = Phaser.Math.Between(0, 2);
 
-    switch (2) {
+    switch (powerUp) {
       case 0:
         this.applyShrinkAvatarPowerUp();
         break;
