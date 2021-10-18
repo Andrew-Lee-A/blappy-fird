@@ -8,6 +8,19 @@ class DataStorage {
         this.unlockable = new Unlockable();
     }
 
+    // the default diffulty level is 0
+    getDifficulty() {
+        return parseInt(localStorage.getItem("difficulty") || 0);
+    }
+
+    setDifficulty(difficltyLevel) {
+        if(difficltyLevel >= 0 && difficltyLevel <= 2) { // only three possible levels 0, 1, 2
+            localeStorage.setItem("difficulty", difficltyLevel);
+        } else {
+            throw "Difficulty not in range 0 - 2";
+        }
+    }
+
     // return array of unlocks
     getUnlocks() {
         return this.unlockable.unlocked;

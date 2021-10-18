@@ -23,8 +23,8 @@ const gameOptions = {
   catGravity: 800,
   catFlapPower: 300,
   minPipeHeight: 50,
-  pipeDistance: [250, 300],
-  pipeHole: [150, 170],
+  pipeDistance: [300, 300],
+  pipeHole: [165, 165],
 };
 
 const game = new Phaser.Game(config);

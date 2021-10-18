@@ -1,11 +1,12 @@
 /** @type {import("../typing/phaser")} */
-
 class Game extends Phaser.Scene {
   constructor() {
     super({ key: "Game" });
     this.currentHeart = 3;
     this.score = 0;
     this.coinNum = 0;
+    this.gameController = new GameController();
+    this.heartsArray;
   }
 
   preload() {
@@ -19,18 +20,18 @@ class Game extends Phaser.Scene {
       frameWidth: 49,
       frameHeight: 44,
     });
-
+    this.load.image("bg_pink", "assets/images/backgrounds/Pink Sunset.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
-    this.load.image("boosted-cat", "assets/images/boosted-player.png")
+    this.load.image("boosted-cat", "assets/images/boosted-player.png");
     this.load.image("pipeInverse", "assets/images/inverse-pipe-sprite.png");
     this.load.spritesheet("heart", "assets/images/heart-container-sheet.png", {
       frameWidth: 28,
       frameHeight: 21,
     });
     this.load.audio("background audio", "assets/audio/Child's Nightmare.wav");
-    this.load.audio("coinSound", "assets/audio/coin-pickup.wav"); 
+    this.load.audio("coinSound", "assets/audio/coin-pickup.wav");
 
     //UI Buttons
     this.load.image("resumeButton", "assets/buttons/resume.png");
@@ -41,6 +42,15 @@ class Game extends Phaser.Scene {
   }
 
   create() {
+    this.background = this.add.tileSprite(
+      0,
+      0,
+      game.config.width,
+      game.config.height,
+      "bg_pink"
+    );
+    this.background.setOrigin(0, 0);
+
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
@@ -52,7 +62,11 @@ class Game extends Phaser.Scene {
     const ANIMATION_DURATION = 250;
 
     this.skinKey = this.getCharacterSkin();
-    this.cat = this.physics.add.sprite(80, game.config.height / 2, this.skinKey);
+    this.cat = this.physics.add.sprite(
+      80,
+      game.config.height / 2,
+      this.skinKey
+    );
     this.cat.body.gravity.y = gameOptions.catGravity;
 
     // add animations
@@ -62,19 +76,13 @@ class Game extends Phaser.Scene {
       this.addCharacterAnimation(ANIMATION_DURATION);
     });
 
-    this.pipeGroup = this.physics.add.group();
-    this.coinGroup = this.physics.add.group();
-
     this.pipePool = [];
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    this.pipeGroup = this.physics.add.group();
     // add pipes on screen
-    for (let i = 0; i < 4; i++) {
-      this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
-      this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
-      this.placePipes();
-    }
+    this.addPipesToScreen();
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
@@ -87,115 +95,145 @@ class Game extends Phaser.Scene {
     });
     this.scoreText = this.add.text(0, 0);
     // add hearts
-    const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
-    this.setHearts(this.currentHeart, heartsArray); // test line
+    this.heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
+    this.setHearts(this.currentHeart, this.heartsArray); // test line
 
     // coin score counter
     this.coinImg = this.physics.add.sprite(50, 50, "coin");
-    this.coinNumText = this.add.text(75, 43, 'X ' + this.coinNum);
+    this.coinNumText = this.add.text(75, 43, "X " + this.coinNum);
 
     // reset local storage
     localStorage.setItem("currentCoin", 0);
     localStorage.setItem("currentScore", 0);
 
+    // add powerUp when true
+    this.addNewPowerUp = false;
+    // create first powerUpSpawn
+    this.powerUpGroup = this.physics.add.group();
+    this.powerUpGroup.create(
+      2000,
+      Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
+      "powerUp"
+    );
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
     // add coin when true
     this.addNewCoin = false;
 
-    // create first coin 
+    // create first coin
     this.coinGroup = this.physics.add.group();
 
-    // given random y value 
-    this.coinGroup.create(1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
+    // given random y value
+    this.coinGroup.create(
+      1100,
+      Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
+      "coin"
+    );
     this.coinGroup.setVelocityX(-this.gameSpeed);
 
-    this.coinSound = this.sound.add("coinSound", {loop: false}); 
+    this.coinSound = this.sound.add("coinSound", { loop: false });
 
     //this.scene.launch(UIScene);
 
-
     //pause button
     this.isPauseflag = false;
-    this.pauseButton = this.add.image(game.config.width-80, game.config.height-30, "pauseButton");
-    this.pauseButton.setInteractive()
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-      this.pauseButton.setTint(0xdedede)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-      this.pauseButton.setTint(0xffffff)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.pauseButton.setTint(0x8afbff)
-      if (this.isPauseflag == false){
-        this.pauseButton.setTexture("pauseButton");
-        this.isPauseflag = true;
-        this.timedEvent.paused = true;
-        this.cat.body.moves = false;
-        this.pipeGroup.setVelocityX(0);
-        this.coinGroup.setVelocityX(0);
-        this.muteAll();
-      }else if (this.isPauseflag == true){
-        this.pauseButton.setTexture("resumeButton");
-        this.isPauseflag = false;
-        this.timedEvent.paused = false;
-        this.cat.body.moves = true;
-        this.pipeGroup.setVelocityX(-this.gameSpeed);
-        this.coinGroup.setVelocityX(-this.gameSpeed);
-        this.unmuteAll();
-      }
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-      this.pauseButton.setTint(0xffffff)
-    })
+    this.pauseButton = this.add.image(
+      game.config.width - 80,
+      game.config.height - 30,
+      "pauseButton"
+    );
+    this.pauseButton
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+        this.pauseButton.setTint(0xdedede);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+        this.pauseButton.setTint(0xffffff);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+        this.pauseButton.setTint(0x8afbff);
+        if (this.isPauseflag == false) {
+          this.pauseButton.setTexture("pauseButton");
+          this.isPauseflag = true;
+          this.timedEvent.paused = true;
+          this.cat.body.moves = false;
+          this.pipeGroup.setVelocityX(0);
+          this.coinGroup.setVelocityX(0);
+          this.powerUpGroup.setVelocityX(0);
+
+          this.muteAll();
+        } else if (this.isPauseflag == true) {
+          this.pauseButton.setTexture("resumeButton");
+          this.isPauseflag = false;
+          this.timedEvent.paused = false;
+          this.cat.body.moves = true;
+          this.pipeGroup.setVelocityX(-this.gameSpeed);
+          this.coinGroup.setVelocityX(-this.gameSpeed);
+          this.powerUpGroup.setVelocityX(-this.gameSpeed);
+          this.unmuteAll();
+        }
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        this.pauseButton.setTint(0xffffff);
+      });
 
     //mute button
     this.isMuteflag = false;
-    this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
-    this.muteButton.setInteractive()
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-      this.muteButton.setTint(0xdedede)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-      this.muteButton.setTint(0xffffff)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.muteButton.setTint(0x8afbff)
-      if (this.isMuteflag == false){
-        this.muteButton.setTexture("unmuteButton");
-        this.isMuteflag = true;
-        this.muteAll();
-      }else if (this.isMuteflag == true){
-        this.muteButton.setTexture("muteButton");
-        this.isMuteflag = false;
-        this.unmuteAll();
-      }
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-      this.muteButton.setTint(0xffffff)
-    })
-
+    this.muteButton = this.add.image(
+      game.config.width - 130,
+      game.config.height - 30,
+      "muteButton"
+    );
+    this.muteButton
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+        this.muteButton.setTint(0xdedede);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+        this.muteButton.setTint(0xffffff);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+        this.muteButton.setTint(0x8afbff);
+        if (this.isMuteflag == false) {
+          this.muteButton.setTexture("unmuteButton");
+          this.isMuteflag = true;
+          this.muteAll();
+        } else if (this.isMuteflag == true) {
+          this.muteButton.setTexture("muteButton");
+          this.isMuteflag = false;
+          this.unmuteAll();
+        }
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        this.muteButton.setTint(0xffffff);
+      });
 
     //home button
-    this.homeButton = this.add.image(game.config.width-30, game.config.height-30, "homeButton");
-    this.homeButton.setInteractive()
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-      this.homeButton.setTint(0xdedede)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-      this.homeButton.setTint(0xffffff)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.homeButton.setTint(0x8afbff);
-      this.backgroundMusic.stop();
-      this.scene.stop("Game");
-      this.scene.start("MainMenu")
-      
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-      this.homeButton.setTint(0xffffff)
-    })
+    this.homeButton = this.add.image(
+      game.config.width - 30,
+      game.config.height - 30,
+      "homeButton"
+    );
+    this.homeButton
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+        this.homeButton.setTint(0xdedede);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+        this.homeButton.setTint(0xffffff);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+        this.homeButton.setTint(0x8afbff);
+        this.backgroundMusic.stop();
+        this.scene.stop("Game");
+        this.scene.start("MainMenu");
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        this.homeButton.setTint(0xffffff);
+      });
   }
 
   update() {
+    this.background.tilePositionX += 0.5;
     this.scoreText.setText("Score: " + this.score);
     this.physics.world.collide(
       this.cat,
@@ -221,15 +259,22 @@ class Game extends Phaser.Scene {
           this.addCoin();
           this.addNewCoin = false;
         }
+        if (this.addNewPowerUp) {
+          this.addPowerUp();
+          this.addNewPowerUp = false;
+        }
       }
     }, this);
 
-    //Everytime the score increases by 10, increase the cat speed
-    //if (this.score %10 == 0) {
-    //this.increaseCatSpeed();
-    //}
-
-    // coin collision on pickup
+    // powerup collision
+    this.physics.add.overlap(
+      this.cat,
+      this.powerUpGroup,
+      this.hitPowerUp,
+      null,
+      this
+    );
+    // cat collision on pickup
     this.physics.add.overlap(
       this.cat,
       this.coinGroup,
@@ -246,11 +291,20 @@ class Game extends Phaser.Scene {
         this.coinGroup.clear(this.coinGroup);
       }
     }, this);
+
+    this.powerUpGroup.getChildren().forEach(function (powerUp) {
+      if (powerUp.getBounds().right < 0) {
+        this.addNewPowerUp = true;
+        this.powerUpGroup.clear(this.powerUpGroup);
+      }
+    }, this);
   }
+
   scoreIncrease() {
     this.score += 10;
     this.increaseCatSpeed();
   }
+
   getEvents() {
     // create all event obj
   }
@@ -258,6 +312,7 @@ class Game extends Phaser.Scene {
   pickEvent() {
     // pick a random event from event objs
   }
+
   hitCoin() {
     this.coinSound.play();
 
@@ -275,6 +330,31 @@ class Game extends Phaser.Scene {
     localStorage.setItem("currentCoin", this.coinNum);
   }
 
+  hitPowerUp() {
+    this.powerUpGroup.clear(this.powerUpGroup);
+    this.addNewPowerUp = true;
+    let powerUp = Phaser.Math.Between(0, 2);
+
+    switch (powerUp) {
+      case 0:
+        this.applyShrinkAvatarPowerUp();
+        break;
+
+      case 1:
+        this.currentHeart = this.gameController.extraLife(this.currentHeart, 1);
+        this.updateHeartVisuals();
+        break;
+
+      case 2:
+        this.applyIncreaseSpeedDebuff();
+        break;
+    }
+  }
+  updateHeartVisuals() {
+    this.setHearts(this.currentHeart, this.heartsArray);
+    console.log("hi");
+  }
+  // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
       900,
@@ -284,8 +364,25 @@ class Game extends Phaser.Scene {
     this.coinGroup.setVelocityX(-this.gameSpeed);
   }
 
+  addPowerUp() {
+    this.powerUpGroup.create(
+      900,
+      Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
+      "powerUp"
+    );
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
+  }
+
   flap() {
     this.cat.body.velocity.y = -gameOptions.catFlapPower;
+  }
+  addPipesToScreen() {
+    //adds pipes to screen
+    for (let i = 0; i < 4; i++) {
+      this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
+      this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
+      this.placePipes();
+    }
   }
   placePipes() {
     let rightmost = this.getRightMostPipe();
@@ -313,6 +410,7 @@ class Game extends Phaser.Scene {
     this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
+
   getRightMostPipe() {
     let rightmostPipe = 0;
     this.pipeGroup.getChildren().forEach(function (pipe) {
@@ -386,34 +484,96 @@ class Game extends Phaser.Scene {
   }
 
   increaseCatSpeed() {
-    if (this.gameSpeed < 200) {
-      this.gameSpeed += 5;
+    const EASY_MAX_SPEED = 200;
+    const EASY_SPEED_INCREASE = 5;
+    const MEDIUM_MAX_SPEED = 300;
+    const MEDIUM_SPEED_INCREASE = 6;
+    const HARD_MAX_SPEED = 400;
+    const HARD_SPEED_INCREASE = 8;
+
+    let data = new DataStorage();
+    let difficultyLevel = data.getDifficulty();
+
+    let maxSpeed = EASY_MAX_SPEED;
+    let incrementSpeed = EASY_SPEED_INCREASE;
+    switch (difficultyLevel) {
+      case 1:
+        {
+          maxSpeed = MEDIUM_MAX_SPEED;
+          incrementSpeed = MEDIUM_SPEED_INCREASE;
+        }
+        break;
+      case 2:
+        {
+          maxSpeed = HARD_MAX_SPEED;
+          incrementSpeed = HARD_SPEED_INCREASE;
+        }
+        break;
     }
+
+    if (this.gameSpeed < maxSpeed) {
+      this.gameSpeed += incrementSpeed;
+    }
+
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
   }
 
-  muteAll(){
+  muteAll() {
     this.backgroundMusic.mute = true;
     this.coinSound.mute = true;
   }
 
-  unmuteAll(){
+  unmuteAll() {
     this.backgroundMusic.mute = false;
     this.coinSound.mute = false;
   }
 
+  applyIncreaseSpeedDebuff() {
+    this.currentGameSpeed = this.gameSpeed;
+    this.gameSpeed = this.currentGameSpeed * 1.4;
+    this.speedTime = this.time.delayedCall(
+      5000,
+      this.unapplyIncreaseSpeedDebuff,
+      [this.currentGameSpeed],
+      this
+    );
+  }
+
+  unapplyIncreaseSpeedDebuff(CurrentGameSpeed) {
+    this.gameSpeed = CurrentGameSpeed;
+  }
+
+  applyShrinkAvatarPowerUp() {
+    this.cat.setScale(0.5);
+
+    console.log("Shrink activated");
+
+    this.shrinkTime = this.time.delayedCall(
+      5000,
+      this.unapplyShrinkAvatarPowerUp,
+      [],
+      this
+    );
+  }
+
+  unapplyShrinkAvatarPowerUp(speed) {
+    console.log("Unshrink activated");
+    this.cat.setScale(1);
+  }
+
   /**
-   * returns the character string to set the 
+   * returns the character string to set the
    * avatar of the character to...
    */
-  getCharacterSkin(){
+  getCharacterSkin() {
     const data = new DataStorage();
     let skinIndex = data.getCurrentSkin();
 
     let skinKey = "";
-    switch(skinIndex) {
-      case 0: 
+    switch (skinIndex) {
+      case 0:
         skinKey = "cat";
         break;
       case 1:
@@ -423,8 +583,8 @@ class Game extends Phaser.Scene {
         skinKey = "frog";
         break;
     }
-    
-    if(skinKey === "") {
+
+    if (skinKey === "") {
       throw "ERROR skin key not found...";
     }
 
@@ -434,25 +594,27 @@ class Game extends Phaser.Scene {
   /**
    * add the generic character animation that is for
    * all character skins
-   * @param {*} animeDuration 
+   * @param {*} animeDuration
    */
   addCharacterAnimation(animeDuration) {
-    if(this.playerAnimation == false) { // basic rotation animation
+    if (this.playerAnimation == false) {
+      // basic rotation animation
       this.playerAnimation = true; // lock animation
-      setTimeout(() => {this.playerAnimation = false}, animeDuration * 2);
-      console.log(this.playerAnimation);
+      setTimeout(() => {
+        this.playerAnimation = false;
+      }, animeDuration * 2);
       this.tweens.add({
         targets: this.cat,
         angle: -60,
-        ease: 'linear',
+        ease: "linear",
         duration: animeDuration,
         repeat: 0,
         yoyo: true,
-        
-        onRepeat: function() {
-            this.cat.angle += 1;
-        }
-      })
+
+        onRepeat: function () {
+          this.cat.angle += 1;
+        },
+      });
     }
   }
 
@@ -460,24 +622,22 @@ class Game extends Phaser.Scene {
    * add the unique character animation depending on the selected skin
    */
   addUniqueCharacterAnimation() {
-    if(this.skinKey === 'bear') {
-
+    if (this.skinKey === "bear") {
       this.anims.create({
-        key: 'bear-anime',
-        frames: this.anims.generateFrameNames('bear'),
+        key: "bear-anime",
+        frames: this.anims.generateFrameNames("bear"),
         frameRate: 2,
-        repeat: -1
-      })
-      this.cat.play('bear-anime');
-    } else if (this.skinKey === 'frog') {
-
+        repeat: -1,
+      });
+      this.cat.play("bear-anime");
+    } else if (this.skinKey === "frog") {
       this.anims.create({
-        key: 'frog-anime',
-        frames: this.anims.generateFrameNames('frog'),
+        key: "frog-anime",
+        frames: this.anims.generateFrameNames("frog"),
         frameRate: 2,
-        repeat: -1
-      })
-      this.cat.play('frog-anime');
+        repeat: -1,
+      });
+      this.cat.play("frog-anime");
     } // else default skin... has no animation
   }
 }
