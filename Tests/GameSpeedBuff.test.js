@@ -15,7 +15,7 @@ test("return null if speed multiplier is 0", () => {
     expect(game.getDebuffSpeed(200,1.4)).toBe(280);
 });
 
-test("return correct output speed (negativee)", () => {
+test("return correct output speed (negative)", () => {
     const game = new GameController();
     expect(game.getDebuffSpeed(-200,1.4)).toBe(-280);
 });

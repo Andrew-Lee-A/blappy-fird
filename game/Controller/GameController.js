@@ -33,29 +33,27 @@ class GameController {
   extraLife(currentLives, increment) {
     if (!(Number.isInteger(currentLives) && Number.isInteger(increment))) {
       return null;
-    } 
-    else if (!(currentLives > 0 && increment > 0)) {
+    } else if (!(currentLives > 0 && increment > 0)) {
       return null;
     }
 
     let newLives = currentLives;
     if (currentLives + increment > 3) {
       // do nothing
-    } 
-    else {
+    } else {
       newLives += increment;
     }
     return newLives;
   }
 
   getDebuffSpeed(currentSpeed, speedEnchancer) {
-    // if(currentSpeed == 0) {
-    //   return null;
-    // } else if(speedEnchancer == 0)  { // the enchancer cannot be 0
-    //   return null;
-    // }
+    if(currentSpeed == 0) {
+      return null;
+    }else if(speedEnchancer == 0)  { // the enchancer cannot be 0
+      return null;
+    }
 
-    // return currentSpeed * speedEnchancer;
+     return currentSpeed * speedEnchancer;
   }
   
   /**
