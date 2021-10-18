@@ -1,11 +1,11 @@
 /** @type {import("../typing/phaser")} */
-class Game extends Phaser.Scene {
+class Flip extends Phaser.Scene {
   constructor() {
-    super({ key: "Game" });
+    super({ key: "Flip" });
     this.currentHeart = 3;
     this.score = 0;
     this.coinNum = 0;
-    this.TileMsg = true;
+    this.TitleMsg = true;
     this.gameController = new GameController();
     this.heartsArray;
   }
@@ -42,8 +42,9 @@ class Game extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.setBackgroundColor("#57D9CD");
     this.playerAnimation = false; // must be set here for scene rebuild
-    this.gameSpeed = gameOptions.catSpeed;
+    this.gameSpeed = -gameOptions.catSpeed;
 
     //add and play the back ground music
     this.backgroundMusic = this.sound.add("background audio");
@@ -54,11 +55,12 @@ class Game extends Phaser.Scene {
 
     this.skinKey = this.getCharacterSkin();
     this.cat = this.physics.add.sprite(
-      80,
+      game.config.width - 80,
       game.config.height / 2,
       this.skinKey
     );
     this.cat.body.gravity.y = gameOptions.catGravity;
+    this.cat.flipX = true;
 
     // add animations
     this.addUniqueCharacterAnimation(2000);
@@ -94,7 +96,7 @@ class Game extends Phaser.Scene {
     // create first powerUpSpawn
     this.powerUpGroup = this.physics.add.group();
     this.powerUpGroup.create(
-      2000,
+      -2000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "powerUp"
     );
@@ -107,17 +109,13 @@ class Game extends Phaser.Scene {
 
     // given random y value
     this.coinGroup.create(
-      1100,
+      -1100,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
     this.coinGroup.setVelocityX(-this.gameSpeed);
 
     this.coinSound = this.sound.add("coinSound", { loop: false });
-
-    this.Title = this.add.text(150, 100, "Classic").setFontSize(70);
-
-    //this.scene.launch(UIScene);
 
     //pause button
     this.isPauseflag = false;
@@ -153,6 +151,9 @@ class Game extends Phaser.Scene {
     this.setHomeButtonInteractive();
     this.setMuteButtonInteractive();
     this.setPauseButtonInteractive();
+
+    //create event announcement
+    this.title = this.add.text(150, 100, "Flip").setFontSize(70);
   }
 
   update() {
@@ -169,7 +170,7 @@ class Game extends Phaser.Scene {
 
     this.hitBounds();
     this.pipeGroup.getChildren().forEach(function (pipe) {
-      if (pipe.getBounds().right < 0) {
+      if (pipe.getBounds().left > game.config.width) {
         this.pipePool.push(pipe);
         if (this.pipePool.length == 2) {
           this.placePipes(true);
@@ -187,6 +188,18 @@ class Game extends Phaser.Scene {
         }
       }
     }, this);
+
+    //show game type
+    if ((this.TitleMsg = true)) {
+      this.timer = this.time.addEvent({
+        delay: 1500,
+        callback: () => {
+          this.TitleMsg = false;
+          this.killTitle(this.title);
+        },
+        loop: true,
+      });
+    }
 
     // powerup collision
     this.physics.add.overlap(
@@ -207,29 +220,21 @@ class Game extends Phaser.Scene {
 
     // create next coin when missed ones go out of bounds
     this.coinGroup.getChildren().forEach(function (coin) {
-      if (coin.getBounds().right < 0) {
+      if (coin.getBounds().left > game.config.width) {
         // delete coin and add new coin
         this.addNewCoin = true;
         this.coinGroup.clear(this.coinGroup);
       }
     }, this);
+
     this.powerUpGroup.getChildren().forEach(function (powerUp) {
-      if (powerUp.getBounds().right < 0) {
+      if (powerUp.getBounds().left > game.config.width) {
         this.addNewPowerUp = true;
         this.powerUpGroup.clear(this.powerUpGroup);
       }
     }, this);
-    // show Game type
-    if ((this.TitleMsg = true)) {
-      this.timer = this.time.addEvent({
-        delay: 1500,
-        callback: () => {
-          (this.TitleMsg = false), this.killTitle(this.Title);
-        },
-        loop: true,
-      });
-    }
   }
+
   killTitle(title) {
     title.destroy();
   }
@@ -280,7 +285,7 @@ class Game extends Phaser.Scene {
   }
   addCoin() {
     this.coinGroup.create(
-      1000,
+      -1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
@@ -289,7 +294,7 @@ class Game extends Phaser.Scene {
 
   addPowerUp() {
     this.powerUpGroup.create(
-      1000,
+      -1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "powerUp"
     );
@@ -301,7 +306,6 @@ class Game extends Phaser.Scene {
   }
   addPipesToScreen() {
     //adds pipes to screen
-    console.log("adds pipes");
     for (let i = 0; i < 4; i++) {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
@@ -309,6 +313,7 @@ class Game extends Phaser.Scene {
     }
   }
   placePipes() {
+    console.log("adds pipes");
     let rightmost = this.getRightMostPipe();
     let pipeHoleHeight = Phaser.Math.Between(
       gameOptions.pipeHole[0],
@@ -319,16 +324,17 @@ class Game extends Phaser.Scene {
       game.config.height - gameOptions.minPipeHeight - pipeHoleHeight / 2
     );
     this.pipePool[0].x =
-      rightmost +
-      this.pipePool[0].getBounds().width +
-      Phaser.Math.Between(
-        gameOptions.pipeDistance[0],
-        gameOptions.pipeDistance[1]
-      );
+      rightmost -
+      (this.pipePool[0].getBounds().width +
+        Phaser.Math.Between(
+          gameOptions.pipeDistance[0],
+          gameOptions.pipeDistance[1]
+        ));
     this.pipePool[0].y = pipeHolePosition - pipeHoleHeight / 2;
     this.pipePool[0].setOrigin(0, 1);
     this.pipePool[0].setImmovable(true);
     this.pipePool[1].x = this.pipePool[0].x;
+    console.log("here");
     this.pipePool[1].y = pipeHolePosition + pipeHoleHeight / 2;
     this.pipePool[1].setOrigin(0, 0);
     this.pipePool[1].setImmovable(true);
@@ -344,10 +350,11 @@ class Game extends Phaser.Scene {
     });
   }
   getRightMostPipe() {
-    let rightmostPipe = 0;
+    let rightmostPipe = game.config.width;
     this.pipeGroup.getChildren().forEach(function (pipe) {
-      rightmostPipe = Math.max(rightmostPipe, pipe.x);
+      rightmostPipe = Math.min(rightmostPipe, pipe.x);
     });
+    console.log(rightmostPipe);
     return rightmostPipe;
   }
 
@@ -362,21 +369,17 @@ class Game extends Phaser.Scene {
       this.currentHeart = 3;
       localStorage.setItem("currentScore", this.score);
       localStorage.setItem("currentCoin", this.coinNum);
-      this.scene.stop("Game");
+      this.scene.stop("Flip");
       this.scene.start("GameOver");
       this.score = 0;
       this.coinNum = 0;
       this.backgroundMusic.stop();
 
-      // update score
-      // gametype must be specify in single quotation
       let data = new DataStorage();
+      data.setScore("flip", this.score);
 
-      console.log("current classic score:" + data.getScore("classic"));
-      data.setScore("classic", this.score);
-      console.log("now score:" + data.getScore("classic"));
     } else {
-      this.scene.start("Game");
+      this.scene.start("Flip");
       this.backgroundMusic.stop();
       setTimeout(() => {
         this.cameras.main.shake(200, 0.01);
@@ -444,7 +447,7 @@ class Game extends Phaser.Scene {
     }
 
     if (this.gameSpeed < maxSpeed) {
-      this.gameSpeed += incrementSpeed;
+      this.gameSpeed -= incrementSpeed;
     }
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
@@ -472,6 +475,8 @@ class Game extends Phaser.Scene {
   applyShrinkAvatarPowerUp() {
     this.cat.setScale(0.5);
 
+    console.log("Shrink activated");
+
     this.shrinkTime = this.time.delayedCall(
       5000,
       this.unapplyShrinkAvatarPowerUp,
@@ -481,8 +486,10 @@ class Game extends Phaser.Scene {
   }
 
   unapplyShrinkAvatarPowerUp(speed) {
+    console.log("Unshrink activated");
     this.cat.setScale(1);
   }
+
   /**
    * returns the character string to set the
    * avatar of the character to...
@@ -523,16 +530,17 @@ class Game extends Phaser.Scene {
       setTimeout(() => {
         this.playerAnimation = false;
       }, animeDuration * 2);
+      console.log(this.playerAnimation);
       this.tweens.add({
         targets: this.cat,
-        angle: -60,
+        angle: +60,
         ease: "linear",
         duration: animeDuration,
         repeat: 0,
         yoyo: true,
 
         onRepeat: function () {
-          this.cat.angle += 1;
+          this.cat.angle += -1;
         },
       });
     }
@@ -581,7 +589,7 @@ class Game extends Phaser.Scene {
       });
   }
 
-  setMuteButtonInteractive(){
+  setMuteButtonInteractive() {
     let data = new DataStorage();
     this.muteButton
       .setInteractive()

@@ -4,7 +4,7 @@ class MainMenu extends Phaser.Scene {
     constructor() {
         super({key: 'MainMenu'});
         this.menuState = {};
-        this.gameEvents = new Array("Game", "Gravity");
+        this.gameEvents = new Array("Game", "Gravity", "Flip");
     }
 
     preload() {

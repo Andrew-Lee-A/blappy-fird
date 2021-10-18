@@ -7,6 +7,8 @@ class Score {
         // if not found then it is set to 0
         this._laserScore = parseInt(localStorage.getItem('laserScore')) || 0;
         this._classicScore = parseInt(localStorage.getItem('classicScore')) || 0;
+        this._gunScore = parseInt(localStorage.getItem('gunScore')) || 0;
+        this._flipSCore = parseInt(localStorage.getItem('flipScore')) || 0;
         this._gravityScore = parseInt(localStorage.getItem('gravityScore')) || 0;
     }
 }
