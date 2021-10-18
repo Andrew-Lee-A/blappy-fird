@@ -604,9 +604,11 @@ class Game extends Phaser.Scene {
         if (data.getAudio()) {
           this.muteButton.setTexture("unmuteButton");
           this.muteAll();
+          data.setAudio();
         } else if (!data.getAudio()) {
           this.muteButton.setTexture("muteButton");
           this.unmuteAll();
+          data.setAudio();
         }
       })
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
