@@ -41,6 +41,8 @@ class Flip extends Phaser.Scene {
     }
     
     create() {
+        //create event announcement
+        
       this.background = this.add.tileSprite(
         0,
         0,
@@ -63,6 +65,7 @@ class Flip extends Phaser.Scene {
       this.skinKey = this.getCharacterSkin();
       this.cat = this.physics.add.sprite(game.config.width-80, game.config.height / 2, this.skinKey);
       this.cat.body.gravity.y = gameOptions.catGravity;
+      this.cat.flipX = true;
       
       // add animations
       this.addUniqueCharacterAnimation(2000);
@@ -107,7 +110,7 @@ class Flip extends Phaser.Scene {
       // create first powerUpSpawn
       this.powerUpGroup = this.physics.add.group();
       this.powerUpGroup.create(
-        2000,
+        -2000,
         Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
         "powerUp"
       );
@@ -119,7 +122,7 @@ class Flip extends Phaser.Scene {
       this.coinGroup = this.physics.add.group();
       
       // given random y value 
-      this.coinGroup.create(1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
+      this.coinGroup.create(-1100, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "coin")
       this.coinGroup.setVelocityX(-this.gameSpeed);
       
       this.coinSound = this.sound.add("coinSound", {loop: false}); 
@@ -203,7 +206,7 @@ class Flip extends Phaser.Scene {
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
         this.homeButton.setTint(0x8afbff);
         this.backgroundMusic.stop();
-        this.scene.stop("Game");
+        this.scene.stop("Flip");
         this.scene.start("MainMenu")
         
       })
@@ -213,7 +216,7 @@ class Flip extends Phaser.Scene {
     }
   
     update() {
-      this.background.tilePositionX += 0.5;
+      this.background.tilePositionX -= 0.5;
       this.scoreText.setText("Score: " + this.score);
       this.physics.world.collide(
         this.cat,
@@ -227,7 +230,7 @@ class Flip extends Phaser.Scene {
   
       this.hitBounds();
       this.pipeGroup.getChildren().forEach(function (pipe) {
-        if (pipe.getBounds().right < 0) {
+        if (pipe.getBounds().left > game.config.width) {
           this.pipePool.push(pipe);
           if (this.pipePool.length == 2) {
             this.placePipes(true);
@@ -267,7 +270,7 @@ class Flip extends Phaser.Scene {
   
       // create next coin when missed ones go out of bounds
       this.coinGroup.getChildren().forEach(function (coin) {
-        if (coin.getBounds().right < 0) {
+        if (coin.getBounds().left > game.config.width) {
           // delete coin and add new coin
           this.addNewCoin = true;
           this.coinGroup.clear(this.coinGroup);
@@ -275,7 +278,7 @@ class Flip extends Phaser.Scene {
       }, this);
   
       this.powerUpGroup.getChildren().forEach(function (powerUp){
-        if(powerUp.getBounds().right < 0) {
+        if(powerUp.getBounds().left > game.config.width) {
           
         this.addNewPowerUp = true;
         this.powerUpGroup.clear(this.powerUpGroup);
@@ -340,7 +343,7 @@ class Flip extends Phaser.Scene {
     // If powerup collides with pipe then powerup gets deleted
     addCoin() {
       this.coinGroup.create(
-        900,
+        -900,
         Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
         "coin"
       );
@@ -348,7 +351,7 @@ class Flip extends Phaser.Scene {
     }
   
     addPowerUp(){
-      this.powerUpGroup.create(900, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "powerUp");
+      this.powerUpGroup.create(-900, Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75), "powerUp");
       this.powerUpGroup.setVelocityX(-this.gameSpeed);
     }
   
@@ -364,6 +367,7 @@ class Flip extends Phaser.Scene {
       }
     }
     placePipes() {
+        console.log("adds pipes");
       let rightmost = this.getRightMostPipe();
       let pipeHoleHeight = Phaser.Math.Between(
         gameOptions.pipeHole[0],
@@ -374,16 +378,17 @@ class Flip extends Phaser.Scene {
         game.config.height - gameOptions.minPipeHeight - pipeHoleHeight / 2
       );
       this.pipePool[0].x =
-        rightmost +
-        this.pipePool[0].getBounds().width +
+        rightmost -
+        (this.pipePool[0].getBounds().width +
         Phaser.Math.Between(
           gameOptions.pipeDistance[0],
           gameOptions.pipeDistance[1]
-        );
+        ));
       this.pipePool[0].y = pipeHolePosition - pipeHoleHeight / 2;
       this.pipePool[0].setOrigin(0, 1);
       this.pipePool[0].setImmovable(true);
       this.pipePool[1].x = this.pipePool[0].x;
+      console.log("here");
       this.pipePool[1].y = pipeHolePosition + pipeHoleHeight / 2;
       this.pipePool[1].setOrigin(0, 0);
       this.pipePool[1].setImmovable(true);
@@ -391,10 +396,11 @@ class Flip extends Phaser.Scene {
     }
   
     getRightMostPipe() {
-      let rightmostPipe = 0;
+      let rightmostPipe = game.config.width;
       this.pipeGroup.getChildren().forEach(function (pipe) {
-        rightmostPipe = Math.max(rightmostPipe, pipe.x);
+        rightmostPipe = Math.min(rightmostPipe, pipe.x);
       });
+      console.log(rightmostPipe);
       return rightmostPipe;
     }
   
@@ -409,13 +415,13 @@ class Flip extends Phaser.Scene {
         this.currentHeart = 3;
         localStorage.setItem("currentScore", this.score);
         localStorage.setItem("currentCoin", this.coinNum);
-        this.scene.stop("Game");
+        this.scene.stop("Flip");
         this.scene.start("GameOver");
         this.score = 0;
         this.coinNum = 0;
         this.backgroundMusic.stop();
       } else {
-        this.scene.start("Game");
+        this.scene.start("Flip");
         this.backgroundMusic.stop();
         setTimeout(() => {
           this.cameras.main.shake(200, 0.01);
@@ -562,14 +568,14 @@ class Flip extends Phaser.Scene {
         console.log(this.playerAnimation);
         this.tweens.add({
           targets: this.cat,
-          angle: -60,
+          angle: +60,
           ease: 'linear',
           duration: animeDuration,
           repeat: 0,
           yoyo: true,
           
           onRepeat: function() {
-              this.cat.angle += 1;
+              this.cat.angle += -1;
           }
         })
       }
