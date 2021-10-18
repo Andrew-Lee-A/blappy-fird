@@ -42,7 +42,7 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor("#FFFFFF");
+    this.cameras.main.setBackgroundColor("#57D9CD");
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
