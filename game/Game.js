@@ -352,7 +352,7 @@ class Game extends Phaser.Scene {
   }
   updateHeartVisuals() {
     this.setHearts(this.currentHeart, this.heartsArray);
-    console.log("hi");
+    
   }
   // If powerup collides with pipe then powerup gets deleted
   addCoin() {
@@ -540,7 +540,6 @@ class Game extends Phaser.Scene {
   applyShrinkAvatarPowerUp() {
     this.cat.setScale(0.5);
 
-    console.log("Shrink activated");
 
     this.shrinkTime = this.time.delayedCall(
       5000,
@@ -551,7 +550,7 @@ class Game extends Phaser.Scene {
   }
 
   unapplyShrinkAvatarPowerUp(speed) {
-    console.log("Unshrink activated");
+    
     this.cat.setScale(1);
   }
 
