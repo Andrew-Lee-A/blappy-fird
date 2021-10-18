@@ -331,7 +331,7 @@ class Game extends Phaser.Scene {
         break;
       
       case 2:
-        this.applyReduceSpeedPowerUp();
+        this.applyIncreaseSpeedDebuff();
         break;
     }
 
