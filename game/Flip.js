@@ -73,8 +73,6 @@ class Flip extends Phaser.Scene {
 
     this.pipePool = [];
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     this.pipeGroup = this.physics.add.group();
     // add pipes on screen
     this.addPipesToScreen();
@@ -126,8 +124,6 @@ class Flip extends Phaser.Scene {
     this.coinGroup.setVelocityX(-this.gameSpeed);
 
     this.coinSound = this.sound.add("coinSound", { loop: false });
-
-    //this.scene.launch(UIScene);
 
     //pause button
     this.isPauseflag = false;
@@ -286,7 +282,6 @@ class Flip extends Phaser.Scene {
   updateHeartVisuals() {
     this.setHearts(this.currentHeart, this.heartsArray);
   }
-  // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
       -1000,

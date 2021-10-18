@@ -118,8 +118,6 @@ class Gravity extends Phaser.Scene {
 
     this.Title = this.add.text(150, 100, "Gravity").setFontSize(70);
 
-    //this.scene.launch(UIScene);
-
     //pause button
     this.isPauseflag = false;
     this.pauseButton = this.add.image(
@@ -144,7 +142,6 @@ class Gravity extends Phaser.Scene {
         "unmuteButton"
       );
     }
-    
     //home button
     this.homeButton = this.add.image(
       game.config.width - 30,

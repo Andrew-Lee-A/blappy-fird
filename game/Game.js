@@ -260,7 +260,7 @@ class Game extends Phaser.Scene {
     this.addNewPowerUp = true;
     let powerUp = Phaser.Math.Between(0, 2);
 
-    switch (2) {
+    switch (powerUp) {
       case 0:
         this.applyShrinkAvatarPowerUp();
         break;
