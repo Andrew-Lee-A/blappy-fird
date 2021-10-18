@@ -470,7 +470,7 @@ class Game extends Phaser.Scene {
       }
       break;
       case 2: {
-        maxSpeed = HARD_MAX_INCREASE;
+        maxSpeed = HARD_MAX_SPEED;
         incrementSpeed = HARD_SPEED_INCREASE;
       }
       break;
@@ -482,9 +482,7 @@ class Game extends Phaser.Scene {
     
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
-    this.powerUpGroup.setVelocityX(-this.gameSpeed);
-    //change powerup game speed
-
+    this.pipeGroup.setVelocityX(-this.gameSpeed);
   }
 
   muteAll(){
@@ -497,13 +495,13 @@ class Game extends Phaser.Scene {
     this.coinSound.mute = false;
   }
 
-  applyReduceSpeedPowerUp(){
+  applyIncreaseSpeedDebuff(){
     this.currentGameSpeed = this.gameSpeed
-    this.gameSpeed = this.currentGameSpeed * 0.5 
-    this.speedTime = this.time.delayedCall(5000, this.unapplyReduceSpeedPowerUp, [this.currentGameSpeed], this);
+    this.gameSpeed = this.currentGameSpeed * 1.4 
+    this.speedTime = this.time.delayedCall(10000, this.unapplyIncreaseSpeedDebuff, [this.currentGameSpeed], this);
   }
 
-  unapplyReduceSpeedPowerUp(CurrentGameSpeed){
+  unapplyIncreaseSpeedDebuff(CurrentGameSpeed){
     this.gameSpeed = CurrentGameSpeed
   }
 
@@ -512,7 +510,7 @@ class Game extends Phaser.Scene {
 
     console.log("Shrink activated");
 
-    this.shrinkTime = this.time.delayedCall(5000, this.unapplyShrinkAvatarPowerUp, [], this);
+    this.shrinkTime = this.time.delayedCall(10000, this.unapplyShrinkAvatarPowerUp, [], this);
   }
 
   unapplyShrinkAvatarPowerUp(speed){
