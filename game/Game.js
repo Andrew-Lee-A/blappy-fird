@@ -372,6 +372,7 @@ class Game extends Phaser.Scene {
   }
   addPipesToScreen() {
     //adds pipes to screen
+    console.log("adds pipes");
     for (let i = 0; i < 4; i++) {
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
       this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
@@ -414,7 +415,7 @@ class Game extends Phaser.Scene {
     });
   }
   getRightMostPipe() {
-    let rightmostPipe = 0;
+    let rightmostPipe = 0
     this.pipeGroup.getChildren().forEach(function (pipe) {
       rightmostPipe = Math.max(rightmostPipe, pipe.x);
     });
