@@ -5,6 +5,7 @@ class Game extends Phaser.Scene {
     this.currentHeart = 3;
     this.score = 0;
     this.coinNum = 0;
+    this.TileMsg = true;
     this.gameController = new GameController();
     this.heartsArray;
   }
@@ -69,8 +70,6 @@ class Game extends Phaser.Scene {
 
     this.pipePool = [];
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     this.pipeGroup = this.physics.add.group();
     // add pipes on screen
     this.addPipesToScreen();
@@ -117,6 +116,8 @@ class Game extends Phaser.Scene {
 
     this.coinSound = this.sound.add("coinSound", { loop: false });
 
+    this.Title = this.add.text(150, 100, "Classic").setFontSize(70);
+
     //this.scene.launch(UIScene);
 
     //pause button
@@ -126,35 +127,23 @@ class Game extends Phaser.Scene {
       game.config.height - 30,
       "pauseButton"
     );
-    
+
     //mute button
     let data = new DataStorage();
-    if(data.getAudio()){
-      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
-    }else{
+    if (data.getAudio()) {
+      this.muteButton = this.add.image(
+        game.config.width - 130,
+        game.config.height - 30,
+        "muteButton"
+      );
+    } else {
       this.muteAll();
-      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "unmuteButton");
+      this.muteButton = this.add.image(
+        game.config.width - 130,
+        game.config.height - 30,
+        "unmuteButton"
+      );
     }
-    this.muteButton.setInteractive()
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-      this.muteButton.setTint(0xdedede)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-      this.muteButton.setTint(0xffffff)
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.muteButton.setTint(0x8afbff)
-      if (data.getAudio()){
-        this.muteButton.setTexture("unmuteButton");
-        this.muteAll();
-      }else if (!data.getAudio()){
-        this.muteButton.setTexture("muteButton");
-        this.unmuteAll();
-      }
-    })
-    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-      this.muteButton.setTint(0xffffff)
-    })
 
     //home button
     this.homeButton = this.add.image(
@@ -163,9 +152,8 @@ class Game extends Phaser.Scene {
       "homeButton"
     );
     this.setHomeButtonInteractive();
-    // this.setMuteButtonInteractive();
+    this.setMuteButtonInteractive();
     this.setPauseButtonInteractive();
-    
   }
 
   update() {
@@ -226,26 +214,29 @@ class Game extends Phaser.Scene {
         this.coinGroup.clear(this.coinGroup);
       }
     }, this);
-
     this.powerUpGroup.getChildren().forEach(function (powerUp) {
       if (powerUp.getBounds().right < 0) {
         this.addNewPowerUp = true;
         this.powerUpGroup.clear(this.powerUpGroup);
       }
     }, this);
+    // show Game type
+    if ((this.TitleMsg = true)) {
+      this.timer = this.time.addEvent({
+        delay: 1500,
+        callback: () => {
+          (this.TitleMsg = false), this.killTitle(this.Title);
+        },
+        loop: true,
+      });
+    }
   }
-
+  killTitle(title) {
+    title.destroy();
+  }
   scoreIncrease() {
     this.score += 10;
     this.increaseCatSpeed();
-  }
-
-  getEvents() {
-    // create all event obj
-  }
-
-  pickEvent() {
-    // pick a random event from event objs
   }
 
   hitCoin() {
@@ -288,7 +279,6 @@ class Game extends Phaser.Scene {
   updateHeartVisuals() {
     this.setHearts(this.currentHeart, this.heartsArray);
   }
-  // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
       1000,
@@ -383,9 +373,9 @@ class Game extends Phaser.Scene {
       // gametype must be specify in single quotation
       let data = new DataStorage();
 
-      console.log("current classic score:"+data.getScore('classic'));
-      data.setScore('classic',this.score);
-      console.log("now score:"+data.getScore('classic'));
+      console.log("current classic score:" + data.getScore("classic"));
+      data.setScore("classic", this.score);
+      console.log("now score:" + data.getScore("classic"));
     } else {
       this.scene.start("Game");
       this.backgroundMusic.stop();
@@ -439,23 +429,24 @@ class Game extends Phaser.Scene {
 
     let maxSpeed = EASY_MAX_SPEED;
     let incrementSpeed = EASY_SPEED_INCREASE;
-    switch(difficultyLevel) {
-      case 1: {
-        maxSpeed = MEDIUM_MAX_SPEED;
-        incrementSpeed = MEDIUM_SPEED_INCREASE;
-      }
-      break;
-      case 2: {
-        maxSpeed = HARD_MAX_SPEED;
-        incrementSpeed = HARD_SPEED_INCREASE;
-      }
-      break;
+    switch (difficultyLevel) {
+      case 1:
+        {
+          maxSpeed = MEDIUM_MAX_SPEED;
+          incrementSpeed = MEDIUM_SPEED_INCREASE;
+        }
+        break;
+      case 2:
+        {
+          maxSpeed = HARD_MAX_SPEED;
+          incrementSpeed = HARD_SPEED_INCREASE;
+        }
+        break;
     }
 
     if (this.gameSpeed < maxSpeed) {
       this.gameSpeed += incrementSpeed;
     }
-
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     this.powerUpGroup.setVelocityX(-this.gameSpeed);
@@ -500,7 +491,6 @@ class Game extends Phaser.Scene {
   unapplyShrinkAvatarPowerUp(speed) {
     this.cat.setScale(1);
   }
-
   /**
    * returns the character string to set the
    * avatar of the character to...
@@ -579,7 +569,7 @@ class Game extends Phaser.Scene {
     } // else default skin... has no animation
   }
 
-  setHomeButtonInteractive(){
+  setHomeButtonInteractive() {
     this.homeButton
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -599,33 +589,32 @@ class Game extends Phaser.Scene {
       });
   }
 
-  // setMuteButtonInteractive(){
-  //   this.muteButton
-  //     .setInteractive()
-  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-  //       this.muteButton.setTint(0xdedede);
-  //     })
-  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-  //       this.muteButton.setTint(0xffffff);
-  //     })
-  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-  //       this.muteButton.setTint(0x8afbff);
-  //       if (this.isMuteflag == false) {
-  //         this.muteButton.setTexture("unmuteButton");
-  //         this.isMuteflag = true;
-  //         this.muteAll();
-  //       } else if (this.isMuteflag == true) {
-  //         this.muteButton.setTexture("muteButton");
-  //         this.isMuteflag = false;
-  //         this.unmuteAll();
-  //       }
-  //     })
-  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-  //       this.muteButton.setTint(0xffffff);
-  //     });
-  // }
+  setMuteButtonInteractive(){
+    let data = new DataStorage();
+    this.muteButton
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+        this.muteButton.setTint(0xdedede);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+        this.muteButton.setTint(0xffffff);
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+        this.muteButton.setTint(0x8afbff);
+        if (data.getAudio()) {
+          this.muteButton.setTexture("unmuteButton");
+          this.muteAll();
+        } else if (!data.getAudio()) {
+          this.muteButton.setTexture("muteButton");
+          this.unmuteAll();
+        }
+      })
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        this.muteButton.setTint(0xffffff);
+      });
+  }
 
-  setPauseButtonInteractive(){
+  setPauseButtonInteractive() {
     this.pauseButton
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -660,6 +649,5 @@ class Game extends Phaser.Scene {
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
         this.pauseButton.setTint(0xffffff);
       });
-
   }
 }

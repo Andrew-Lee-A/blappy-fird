@@ -7,6 +7,9 @@ class Flip extends Phaser.Scene {
     this.score = 0;
     this.coinNum = 0;
     this.TitleMsg = true;
+    this.gameController = new GameController();
+    this.heartsArray;
+
   }
 
   preload() {
@@ -86,8 +89,8 @@ class Flip extends Phaser.Scene {
     });
     this.scoreText = this.add.text(0, 0);
     // add hearts
-    const heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
-    this.setHearts(this.currentHeart, heartsArray); // test line
+    this.heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
+    this.setHearts(this.currentHeart, this.heartsArray); // test line
 
     // coin score counter
     this.coinImg = this.physics.add.sprite(50, 50, "coin");
@@ -242,14 +245,6 @@ class Flip extends Phaser.Scene {
     this.increaseCatSpeed();
   }
 
-  getEvents() {
-    // create all event obj
-  }
-
-  pickEvent() {
-    // pick a random event from event objs
-  }
-
   hitCoin() {
     this.coinSound.play();
 
@@ -272,7 +267,7 @@ class Flip extends Phaser.Scene {
     this.addNewPowerUp = true;
     let powerUp = Phaser.Math.Between(0, 2);
 
-    switch (powerUp) {
+    switch (1) {
       case 0:
         this.applyShrinkAvatarPowerUp();
         break;
@@ -293,7 +288,7 @@ class Flip extends Phaser.Scene {
   // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
-      -900,
+      -1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
@@ -302,7 +297,7 @@ class Flip extends Phaser.Scene {
 
   addPowerUp() {
     this.powerUpGroup.create(
-      -900,
+      -1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "powerUp"
     );
