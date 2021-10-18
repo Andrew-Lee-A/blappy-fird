@@ -261,7 +261,7 @@ class Game extends Phaser.Scene {
     this.addNewPowerUp = true;
     let powerUp = Phaser.Math.Between(0, 2);
 
-    switch (powerUp) {
+    switch (2) {
       case 0:
         this.applyShrinkAvatarPowerUp();
         break;
@@ -464,13 +464,10 @@ class Game extends Phaser.Scene {
 
   applyIncreaseSpeedDebuff() {
     this.currentGameSpeed = this.gameSpeed;
-    this.gameSpeed = this.currentGameSpeed * 1.4;
-    this.speedTime = this.time.delayedCall(
-      5000,
-      this.unapplyIncreaseSpeedDebuff,
-      [this.currentGameSpeed],
-      this
-    );
+    this.gameSpeed = this.gameController.getDebuffSpeed(this.currentGameSpeed, 1.4);
+    setTimeout(() => {
+      this.gameSpeed = this.currentGameSpeed;
+    }, 3000);
   }
 
   unapplyIncreaseSpeedDebuff(CurrentGameSpeed) {

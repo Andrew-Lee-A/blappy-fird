@@ -48,6 +48,17 @@ class GameController {
     return newLives;
   }
 
+  getDebuffSpeed(currentSpeed, speedEnchancer) {
+    if(currentSpeed == 0) {
+      return null;
+    }
+    else if(speedEnchancer == 0)  { // the enchancer cannot be 0
+      return null;
+    }
+
+    return currentSpeed * speedEnchancer;
+  }
+  
   /**
    * returns the correct spacing
    * for game over buttons in the y direction if
