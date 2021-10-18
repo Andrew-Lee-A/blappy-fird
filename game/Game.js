@@ -78,11 +78,7 @@ class Game extends Phaser.Scene {
     
     this.pipeGroup = this.physics.add.group();
     // add pipes on screen
-    for (let i = 0; i < 4; i++) {
-      this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
-      this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
-      this.placePipes();
-    }
+    this.addPipesToScreen();
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
@@ -150,6 +146,8 @@ class Game extends Phaser.Scene {
         this.cat.body.moves = false;
         this.pipeGroup.setVelocityX(0);
         this.coinGroup.setVelocityX(0);
+        this.powerUpGroup.setVelocityX(0);
+        
         this.muteAll();
       }else if (this.isPauseflag == true){
         this.pauseButton.setTexture("resumeButton");
@@ -158,6 +156,7 @@ class Game extends Phaser.Scene {
         this.cat.body.moves = true;
         this.pipeGroup.setVelocityX(-this.gameSpeed);
         this.coinGroup.setVelocityX(-this.gameSpeed);
+        this.powerUpGroup.setVelocityX(-this.gameSpeed);
         this.unmuteAll();
       }
     })
@@ -356,7 +355,14 @@ class Game extends Phaser.Scene {
   flap() {
     this.cat.body.velocity.y = -gameOptions.catFlapPower;
   }
-
+  addPipesToScreen(){
+    //adds pipes to screen
+    for (let i = 0; i < 4; i++) {
+      this.pipePool.push(this.pipeGroup.create(0, 0, "pipeInverse"));
+      this.pipePool.push(this.pipeGroup.create(0, 0, "pipe"));
+      this.placePipes();
+    }
+  }
   placePipes() {
     let rightmost = this.getRightMostPipe();
     let pipeHoleHeight = Phaser.Math.Between(
