@@ -482,7 +482,7 @@ class Game extends Phaser.Scene {
     
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
-    this.pipeGroup.setVelocityX(-this.gameSpeed);
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
   }
 
   muteAll(){
