@@ -42,7 +42,7 @@ class Gravity extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor("#CF0758");
+    this.cameras.main.setBackgroundColor("#34E474");
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
