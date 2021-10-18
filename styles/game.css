@@ -1,4 +1,8 @@
+html{
+  background-color: #292d31;
+}
 canvas {
   display: block;
   margin: auto;
 }
+
