@@ -296,7 +296,7 @@ class Gravity extends Phaser.Scene {
     );
     this.powerUpGroup.setVelocityX(-this.gameSpeed);
   }
-  
+
   flap() {
     this.cat.body.velocity.y = gameOptions.catFlapPower;
   }

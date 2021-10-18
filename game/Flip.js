@@ -1,5 +1,4 @@
 /** @type {import("../typing/phaser")} */
-
 class Flip extends Phaser.Scene {
   constructor() {
     super({ key: "Flip" });
@@ -9,7 +8,6 @@ class Flip extends Phaser.Scene {
     this.TitleMsg = true;
     this.gameController = new GameController();
     this.heartsArray;
-
   }
 
   preload() {
@@ -81,13 +79,7 @@ class Flip extends Phaser.Scene {
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
-    this.timedEvent = this.time.addEvent({
-      delay: 1500,
-      callback: this.scoreIncrease,
-      callbackScope: this,
-      loop: true,
-      paused: false,
-    });
+    this.createTimedEventForScore();
     this.scoreText = this.add.text(0, 0);
     // add hearts
     this.heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
@@ -136,15 +128,24 @@ class Flip extends Phaser.Scene {
       game.config.height - 30,
       "pauseButton"
     );
-    
+
     //mute button
-    this.isMuteflag = false;
-    this.muteButton = this.add.image(
-      game.config.width - 130,
-      game.config.height - 30,
-      "muteButton"
-    );
-    
+    let data = new DataStorage();
+    if (data.getAudio()) {
+      this.muteButton = this.add.image(
+        game.config.width - 130,
+        game.config.height - 30,
+        "muteButton"
+      );
+    } else {
+      this.muteAll();
+      this.muteButton = this.add.image(
+        game.config.width - 130,
+        game.config.height - 30,
+        "unmuteButton"
+      );
+    }
+
     //home button
     this.homeButton = this.add.image(
       game.config.width - 30,
@@ -268,7 +269,7 @@ class Flip extends Phaser.Scene {
     this.addNewPowerUp = true;
     let powerUp = Phaser.Math.Between(0, 2);
 
-    switch (1) {
+    switch (powerUp) {
       case 0:
         this.applyShrinkAvatarPowerUp();
         break;
@@ -344,7 +345,15 @@ class Flip extends Phaser.Scene {
     this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
-
+  createTimedEventForScore() {
+    this.timedEvent = this.time.addEvent({
+      delay: 1500,
+      callback: this.scoreIncrease,
+      callbackScope: this,
+      loop: true,
+      paused: false,
+    });
+  }
   getRightMostPipe() {
     let rightmostPipe = game.config.width;
     this.pipeGroup.getChildren().forEach(function (pipe) {
@@ -370,6 +379,10 @@ class Flip extends Phaser.Scene {
       this.score = 0;
       this.coinNum = 0;
       this.backgroundMusic.stop();
+
+      let data = new DataStorage();
+      data.setScore("flip", this.score);
+
     } else {
       this.scene.start("Flip");
       this.backgroundMusic.stop();
@@ -441,7 +454,6 @@ class Flip extends Phaser.Scene {
     if (this.gameSpeed < maxSpeed) {
       this.gameSpeed -= incrementSpeed;
     }
-
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     this.powerUpGroup.setVelocityX(-this.gameSpeed);
@@ -562,7 +574,7 @@ class Flip extends Phaser.Scene {
     } // else default skin... has no animation
   }
 
-  setHomeButtonInteractive(){
+  setHomeButtonInteractive() {
     this.homeButton
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -582,7 +594,8 @@ class Flip extends Phaser.Scene {
       });
   }
 
-  setMuteButtonInteractive(){
+  setMuteButtonInteractive() {
+    let data = new DataStorage();
     this.muteButton
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -593,14 +606,14 @@ class Flip extends Phaser.Scene {
       })
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
         this.muteButton.setTint(0x8afbff);
-        if (this.isMuteflag == false) {
+        if (data.getAudio()) {
           this.muteButton.setTexture("unmuteButton");
-          this.isMuteflag = true;
           this.muteAll();
-        } else if (this.isMuteflag == true) {
+          data.setAudio();
+        } else if (!data.getAudio()) {
           this.muteButton.setTexture("muteButton");
-          this.isMuteflag = false;
           this.unmuteAll();
+          data.setAudio();
         }
       })
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
@@ -608,7 +621,7 @@ class Flip extends Phaser.Scene {
       });
   }
 
-  setPauseButtonInteractive(){
+  setPauseButtonInteractive() {
     this.pauseButton
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -643,6 +656,5 @@ class Flip extends Phaser.Scene {
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
         this.pauseButton.setTint(0xffffff);
       });
-
   }
 }
