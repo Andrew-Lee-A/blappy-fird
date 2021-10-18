@@ -131,89 +131,31 @@ class Flip extends Phaser.Scene {
       //this.scene.launch(UIScene);
       
       
-      //pause button
-      this.isPauseflag = false;
-      this.pauseButton = this.add.image(game.config.width-80, game.config.height-30, "pauseButton");
-      this.pauseButton.setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-        this.pauseButton.setTint(0xdedede)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-        this.pauseButton.setTint(0xffffff)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        this.pauseButton.setTint(0x8afbff)
-        if (this.isPauseflag == false){
-          this.pauseButton.setTexture("pauseButton");
-          this.isPauseflag = true;
-          this.timedEvent.paused = true;
-          this.cat.body.moves = false;
-          this.pipeGroup.setVelocityX(0);
-          this.coinGroup.setVelocityX(0);
-          this.powerUpGroup.setVelocityX(0);
-          
-          this.muteAll();
-        }else if (this.isPauseflag == true){
-          this.pauseButton.setTexture("resumeButton");
-          this.isPauseflag = false;
-          this.timedEvent.paused = false;
-          this.cat.body.moves = true;
-          this.pipeGroup.setVelocityX(-this.gameSpeed);
-          this.coinGroup.setVelocityX(-this.gameSpeed);
-          this.powerUpGroup.setVelocityX(-this.gameSpeed);
-          this.unmuteAll();
-        }
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        this.pauseButton.setTint(0xffffff)
-      })
-  
-      //mute button
-      this.isMuteflag = false;
-      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
-      this.muteButton.setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-        this.muteButton.setTint(0xdedede)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-        this.muteButton.setTint(0xffffff)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        this.muteButton.setTint(0x8afbff)
-        if (this.isMuteflag == false){
-          this.muteButton.setTexture("unmuteButton");
-          this.isMuteflag = true;
-          this.muteAll();
-        }else if (this.isMuteflag == true){
-          this.muteButton.setTexture("muteButton");
-          this.isMuteflag = false;
-          this.unmuteAll();
-        }
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        this.muteButton.setTint(0xffffff)
-      })
-  
-  
-      //home button
-      this.homeButton = this.add.image(game.config.width-30, game.config.height-30, "homeButton");
-      this.homeButton.setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-        this.homeButton.setTint(0xdedede)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-        this.homeButton.setTint(0xffffff)
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        this.homeButton.setTint(0x8afbff);
-        this.backgroundMusic.stop();
-        this.scene.stop("Flip");
-        this.scene.start("MainMenu");
-        
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        this.homeButton.setTint(0xffffff)
-      })
+    //pause button
+    this.isPauseflag = false;
+    this.pauseButton = this.add.image(
+      game.config.width - 80,
+      game.config.height - 30,
+      "pauseButton"
+    );
+    
+    //mute button
+    this.isMuteflag = false;
+    this.muteButton = this.add.image(
+      game.config.width - 130,
+      game.config.height - 30,
+      "muteButton"
+    );
+    
+    //home button
+    this.homeButton = this.add.image(
+      game.config.width - 30,
+      game.config.height - 30,
+      "homeButton"
+    );
+    this.setHomeButtonInteractive();
+    this.setMuteButtonInteractive();
+    this.setPauseButtonInteractive();
 
       //create event announcement
         this.title = this.add.text(150, 100, 'Flip').setFontSize(70);
@@ -623,6 +565,90 @@ class Flip extends Phaser.Scene {
         })
         this.cat.play('frog-anime');
       } // else default skin... has no animation
+    }
+
+    setHomeButtonInteractive(){
+      this.homeButton
+        .setInteractive()
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+          this.homeButton.setTint(0xdedede);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+          this.homeButton.setTint(0xffffff);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+          this.homeButton.setTint(0x8afbff);
+          this.backgroundMusic.stop();
+          this.scene.stop("Game");
+          this.scene.start("MainMenu");
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+          this.homeButton.setTint(0xffffff);
+        });
+    }
+  
+    setMuteButtonInteractive(){
+      this.muteButton
+        .setInteractive()
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+          this.muteButton.setTint(0xdedede);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+          this.muteButton.setTint(0xffffff);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+          this.muteButton.setTint(0x8afbff);
+          if (this.isMuteflag == false) {
+            this.muteButton.setTexture("unmuteButton");
+            this.isMuteflag = true;
+            this.muteAll();
+          } else if (this.isMuteflag == true) {
+            this.muteButton.setTexture("muteButton");
+            this.isMuteflag = false;
+            this.unmuteAll();
+          }
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+          this.muteButton.setTint(0xffffff);
+        });
+    }
+  
+    setPauseButtonInteractive(){
+      this.pauseButton
+        .setInteractive()
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+          this.pauseButton.setTint(0xdedede);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+          this.pauseButton.setTint(0xffffff);
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+          this.pauseButton.setTint(0x8afbff);
+          if (this.isPauseflag == false) {
+            this.pauseButton.setTexture("pauseButton");
+            this.isPauseflag = true;
+            this.timedEvent.paused = true;
+            this.cat.body.moves = false;
+            this.pipeGroup.setVelocityX(0);
+            this.coinGroup.setVelocityX(0);
+            this.powerUpGroup.setVelocityX(0);
+  
+            this.muteAll();
+          } else if (this.isPauseflag == true) {
+            this.pauseButton.setTexture("resumeButton");
+            this.isPauseflag = false;
+            this.timedEvent.paused = false;
+            this.cat.body.moves = true;
+            this.pipeGroup.setVelocityX(-this.gameSpeed);
+            this.coinGroup.setVelocityX(-this.gameSpeed);
+            this.powerUpGroup.setVelocityX(-this.gameSpeed);
+            this.unmuteAll();
+          }
+        })
+        .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+          this.pauseButton.setTint(0xffffff);
+        });
+  
     }
   }
   
