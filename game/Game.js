@@ -20,6 +20,8 @@ class Game extends Phaser.Scene {
       frameHeight: 44,
     });
     this.load.image("bg_test", "assets/images/bgplaceholder.png");
+    this.load.image("bg_pink", "assets/images/backgrounds/Pink Sunset.png");
+    this.load.image("bg_blue", "assets/images/backgrounds/Night sky.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
@@ -41,7 +43,13 @@ class Game extends Phaser.Scene {
   }
   
   create() {
-    this.background = this.add.tileSprite(0,0, game.config.width, game.config.height, "bg_test");
+    this.background = this.add.tileSprite(
+      0,
+      0,
+      game.config.width,
+      game.config.height,
+      "bg_pink"
+    );
     this.background.setOrigin(0,0);
     
     this.playerAnimation = false; // must be set here for scene rebuild
@@ -100,19 +108,16 @@ class Game extends Phaser.Scene {
     localStorage.setItem("currentCoin", 0);
     localStorage.setItem("currentScore", 0);
     
+    // add powerUp when true
+    this.addNewPowerUp = false;
     // create first powerUpSpawn
     this.powerUpGroup = this.physics.add.group();
-
-    this.addNewPowerUp = false;
-
-    // setting a timer for powerUp spawn
-    this.powerSpawnEvent = this.time.addEvent({
-       delay: 15000,
-       callback: this.addPowerUp,
-       callbackScope: this,
-       loop: true,
-       paused: false,
-     });
+    this.powerUpGroup.create(
+      2000,
+      Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
+      "powerUp"
+    );
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
     // add coin when true
     this.addNewCoin = false;
     
@@ -237,13 +242,16 @@ class Game extends Phaser.Scene {
           this.addCoin();
           this.addNewCoin = false;
         }
+        if (this.addNewPowerUp){
+          this.addPowerUp();
+          this.addNewPowerUp = false;
+        }
       }
     }, this);
 
-    //Everytime the score increases by 10, increase the cat speed
-    //if (this.score %10 == 0) {
-    //this.increaseCatSpeed();
-    //}
+    
+
+    // powerup collision
     this.physics.add.overlap(
       this.cat,
       this.powerUpGroup,
@@ -266,6 +274,14 @@ class Game extends Phaser.Scene {
         // delete coin and add new coin
         this.addNewCoin = true;
         this.coinGroup.clear(this.coinGroup);
+      }
+    }, this);
+
+    this.powerUpGroup.getChildren().forEach(function (powerUp){
+      if(powerUp.getBounds().right < 0) {
+        
+      this.addNewPowerUp = true;
+      this.powerUpGroup.clear(this.powerUpGroup);
       }
     }, this);
   }
@@ -302,13 +318,29 @@ class Game extends Phaser.Scene {
 
   hitPowerUp(){
     this.powerUpGroup.clear(this.powerUpGroup);
-
     this.addNewPowerUp = true;
-
-    this.applyReduceSpeedPowerUp();
+    let powerUp = Phaser.Math.Between(0, 2);
+    
+    switch(powerUp) {
+      case 0:
+        this.applyShrinkAvatarPowerUp();
+        break;
+      
+      case 1:
+        this.currentHeart++;
+        break;
+      
+      case 2:
+        this.applyReduceSpeedPowerUp();
+        break;
+    }
 
   }
-
+  extraLife(){
+    this.currentHeart++;
+    let giveLife = false;
+  }
+  // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
       900,
@@ -450,6 +482,7 @@ class Game extends Phaser.Scene {
     
     this.coinGroup.setVelocityX(-this.gameSpeed);
     this.pipeGroup.setVelocityX(-this.gameSpeed);
+    this.powerUpGroup.setVelocityX(-this.gameSpeed);
     //change powerup game speed
 
   }
