@@ -4,12 +4,26 @@ class GameController {
    * @return String, the selected string
    */
   selectGameEvent(gameEvents) {
-    if (gameEvents instanceof Array && gameEvents.length >= 1) {
-      let selected = Math.floor(Math.random() * gameEvents.length);
-      return gameEvents[selected];
-    }
-    throw "invalid game event array passed";
-  }
+            let data = new DataStorage();
+            if (data.getEvent() >= 0 && data.getEvent() <= 3) {
+                if (data.getEvent() === 0) {
+                    if(gameEvents instanceof Array && gameEvents.length >= 1) {
+                        let selected = Math.floor(Math.random() * gameEvents.length);
+                        return gameEvents[selected];
+                        }throw "invalid game event array passed";
+                } else if (data.getEvent() === 1) {
+                    return gameEvents[0];
+                } else if (data.getEvent() === 2) {
+                    return gameEvents[1];
+                } else if (data.getEvent() === 3) {
+                    return gameEvents[2];
+                }else{
+                    return null;
+                }
+            } else{
+                return null;
+            }
+        }
   /**
    *
    * @param {*} currentLives current lives of player

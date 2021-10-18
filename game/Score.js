@@ -9,5 +9,6 @@ class Score {
         this._classicScore = parseInt(localStorage.getItem('classicScore')) || 0;
         this._gunScore = parseInt(localStorage.getItem('gunScore')) || 0;
         this._flipSCore = parseInt(localStorage.getItem('flipScore')) || 0;
+        this._gravityScore = parseInt(localStorage.getItem('gravityScore')) || 0;
     }
 }

@@ -128,13 +128,34 @@ class Game extends Phaser.Scene {
     );
     
     //mute button
-    this.isMuteflag = false;
-    this.muteButton = this.add.image(
-      game.config.width - 130,
-      game.config.height - 30,
-      "muteButton"
-    );
-    
+    let data = new DataStorage();
+    if(data.getAudio()){
+      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "muteButton");
+    }else{
+      this.muteAll();
+      this.muteButton = this.add.image(game.config.width-130, game.config.height-30, "unmuteButton");
+    }
+    this.muteButton.setInteractive()
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+      this.muteButton.setTint(0xdedede)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+      this.muteButton.setTint(0xffffff)
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.muteButton.setTint(0x8afbff)
+      if (data.getAudio()){
+        this.muteButton.setTexture("unmuteButton");
+        this.muteAll();
+      }else if (!data.getAudio()){
+        this.muteButton.setTexture("muteButton");
+        this.unmuteAll();
+      }
+    })
+    .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      this.muteButton.setTint(0xffffff)
+    })
+
     //home button
     this.homeButton = this.add.image(
       game.config.width - 30,
@@ -142,7 +163,7 @@ class Game extends Phaser.Scene {
       "homeButton"
     );
     this.setHomeButtonInteractive();
-    this.setMuteButtonInteractive();
+    // this.setMuteButtonInteractive();
     this.setPauseButtonInteractive();
     
   }
@@ -357,6 +378,14 @@ class Game extends Phaser.Scene {
       this.score = 0;
       this.coinNum = 0;
       this.backgroundMusic.stop();
+
+      // update score
+      // gametype must be specify in single quotation
+      let data = new DataStorage();
+
+      console.log("current classic score:"+data.getScore('classic'));
+      data.setScore('classic',this.score);
+      console.log("now score:"+data.getScore('classic'));
     } else {
       this.scene.start("Game");
       this.backgroundMusic.stop();
@@ -410,19 +439,17 @@ class Game extends Phaser.Scene {
 
     let maxSpeed = EASY_MAX_SPEED;
     let incrementSpeed = EASY_SPEED_INCREASE;
-    switch (difficultyLevel) {
-      case 1:
-        {
-          maxSpeed = MEDIUM_MAX_SPEED;
-          incrementSpeed = MEDIUM_SPEED_INCREASE;
-        }
-        break;
-      case 2:
-        {
-          maxSpeed = HARD_MAX_SPEED;
-          incrementSpeed = HARD_SPEED_INCREASE;
-        }
-        break;
+    switch(difficultyLevel) {
+      case 1: {
+        maxSpeed = MEDIUM_MAX_SPEED;
+        incrementSpeed = MEDIUM_SPEED_INCREASE;
+      }
+      break;
+      case 2: {
+        maxSpeed = HARD_MAX_SPEED;
+        incrementSpeed = HARD_SPEED_INCREASE;
+      }
+      break;
     }
 
     if (this.gameSpeed < maxSpeed) {
@@ -572,31 +599,31 @@ class Game extends Phaser.Scene {
       });
   }
 
-  setMuteButtonInteractive(){
-    this.muteButton
-      .setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-        this.muteButton.setTint(0xdedede);
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-        this.muteButton.setTint(0xffffff);
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-        this.muteButton.setTint(0x8afbff);
-        if (this.isMuteflag == false) {
-          this.muteButton.setTexture("unmuteButton");
-          this.isMuteflag = true;
-          this.muteAll();
-        } else if (this.isMuteflag == true) {
-          this.muteButton.setTexture("muteButton");
-          this.isMuteflag = false;
-          this.unmuteAll();
-        }
-      })
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        this.muteButton.setTint(0xffffff);
-      });
-  }
+  // setMuteButtonInteractive(){
+  //   this.muteButton
+  //     .setInteractive()
+  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+  //       this.muteButton.setTint(0xdedede);
+  //     })
+  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+  //       this.muteButton.setTint(0xffffff);
+  //     })
+  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+  //       this.muteButton.setTint(0x8afbff);
+  //       if (this.isMuteflag == false) {
+  //         this.muteButton.setTexture("unmuteButton");
+  //         this.isMuteflag = true;
+  //         this.muteAll();
+  //       } else if (this.isMuteflag == true) {
+  //         this.muteButton.setTexture("muteButton");
+  //         this.isMuteflag = false;
+  //         this.unmuteAll();
+  //       }
+  //     })
+  //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+  //       this.muteButton.setTint(0xffffff);
+  //     });
+  // }
 
   setPauseButtonInteractive(){
     this.pauseButton

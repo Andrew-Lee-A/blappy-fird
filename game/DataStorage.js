@@ -15,9 +15,36 @@ class DataStorage {
 
     setDifficulty(difficltyLevel) {
         if(difficltyLevel >= 0 && difficltyLevel <= 2) { // only three possible levels 0, 1, 2
-            localeStorage.setItem("difficulty", difficltyLevel);
+            localStorage.setItem("difficulty", difficltyLevel);
         } else {
             throw "Difficulty not in range 0 - 2";
+        }
+    }
+
+    // the event 0 random
+    // 1 is default
+    // 2 is gravity
+    // 3 is flip
+    getEvent() {
+        return parseInt(localStorage.getItem("eventType") || 0);
+    }
+
+    setEvent(eventType) {
+        if(eventType >= 0 && eventType <= 3) {
+            localStorage.setItem("eventType", eventType);
+        } else {
+            throw "Event not in range 0 - 3";
+        }
+    }
+
+    getAudio(){
+        return parseInt(localStorage.getItem("audio") || 1);
+    }
+    setAudio() {
+        if(this.getAudio()=== 1) {
+            localStorage.setItem("audio", 0);
+        } else {
+            localStorage.setItem("audio", 1);
         }
     }
 
@@ -86,10 +113,10 @@ class DataStorage {
                 }
                 break;
 
-            case 'gun':
-                if (this.score._gunScore < score) {
-                    this.score._gunScore = score;
-                    localStorage.setItem('gunScore', score)
+            case 'gravity':
+                if (this.score._gravityScore < score) {
+                    this.score._gravityScore = score;
+                    localStorage.setItem('gravityScore', score)
                 }
                 break;
             case'flip':
@@ -111,8 +138,8 @@ class DataStorage {
             case 'classic':
                 return this.score._classicScore;
 
-            case 'gun':
-                return this.score._gunScore;
+            case 'gravity':
+                return this.score._gravityScore;
 
             default:
                 break;
