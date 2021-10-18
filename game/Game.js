@@ -20,7 +20,6 @@ class Game extends Phaser.Scene {
       frameWidth: 49,
       frameHeight: 44,
     });
-    this.load.image("bg_pink", "assets/images/backgrounds/Pink Sunset.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
@@ -42,15 +41,7 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.background = this.add.tileSprite(
-      0,
-      0,
-      game.config.width,
-      game.config.height,
-      "bg_pink"
-    );
-    this.background.setOrigin(0, 0);
-
+    this.cameras.main.setBackgroundColor("#FFFFFF");
     this.playerAnimation = false; // must be set here for scene rebuild
     this.gameSpeed = gameOptions.catSpeed;
 
@@ -227,7 +218,6 @@ class Game extends Phaser.Scene {
   }
 
   update() {
-    this.background.tilePositionX += 0.5;
     this.scoreText.setText("Score: " + this.score);
     this.physics.world.collide(
       this.cat,
@@ -346,12 +336,11 @@ class Game extends Phaser.Scene {
   }
   updateHeartVisuals() {
     this.setHearts(this.currentHeart, this.heartsArray);
-    
   }
   // If powerup collides with pipe then powerup gets deleted
   addCoin() {
     this.coinGroup.create(
-      900,
+      1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "coin"
     );
@@ -360,7 +349,7 @@ class Game extends Phaser.Scene {
 
   addPowerUp() {
     this.powerUpGroup.create(
-      900,
+      1000,
       Phaser.Math.Between(game.config.height * 0.25, game.config.height * 0.75),
       "powerUp"
     );
@@ -405,7 +394,7 @@ class Game extends Phaser.Scene {
     this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
-  createTimedEventForScore(){
+  createTimedEventForScore() {
     this.timedEvent = this.time.addEvent({
       delay: 1500,
       callback: this.scoreIncrease,
@@ -415,7 +404,7 @@ class Game extends Phaser.Scene {
     });
   }
   getRightMostPipe() {
-    let rightmostPipe = 0
+    let rightmostPipe = 0;
     this.pipeGroup.getChildren().forEach(function (pipe) {
       rightmostPipe = Math.max(rightmostPipe, pipe.x);
     });
@@ -543,7 +532,6 @@ class Game extends Phaser.Scene {
   applyShrinkAvatarPowerUp() {
     this.cat.setScale(0.5);
 
-
     this.shrinkTime = this.time.delayedCall(
       5000,
       this.unapplyShrinkAvatarPowerUp,
@@ -553,7 +541,6 @@ class Game extends Phaser.Scene {
   }
 
   unapplyShrinkAvatarPowerUp(speed) {
-    
     this.cat.setScale(1);
   }
 
