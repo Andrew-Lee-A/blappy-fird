@@ -207,7 +207,7 @@ class Flip extends Phaser.Scene {
         this.homeButton.setTint(0x8afbff);
         this.backgroundMusic.stop();
         this.scene.stop("Flip");
-        this.scene.start("MainMenu")
+        this.scene.start("MainMenu");
         
       })
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
@@ -487,7 +487,7 @@ class Flip extends Phaser.Scene {
       }
   
       if (this.gameSpeed < maxSpeed) {
-        this.gameSpeed += incrementSpeed;
+        this.gameSpeed -= incrementSpeed;
       }
       
       this.coinGroup.setVelocityX(-this.gameSpeed);
