@@ -19,9 +19,7 @@ class Game extends Phaser.Scene {
       frameWidth: 49,
       frameHeight: 44,
     });
-    this.load.image("bg_test", "assets/images/bgplaceholder.png");
     this.load.image("bg_pink", "assets/images/backgrounds/Pink Sunset.png");
-    this.load.image("bg_blue", "assets/images/backgrounds/Night sky.png");
     this.load.image("pipe", "assets/images/default-pipe-sprite.png");
     this.load.image("coin", "assets/images/ticket-sprite.png");
     this.load.image("powerUp", "assets/images/generic-buff-sprite.png");
