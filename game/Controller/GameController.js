@@ -49,14 +49,13 @@ class GameController {
   }
 
   getDebuffSpeed(currentSpeed, speedEnchancer) {
-    if(currentSpeed == 0) {
-      return null;
-    }
-    else if(speedEnchancer == 0)  { // the enchancer cannot be 0
-      return null;
-    }
+    // if(currentSpeed == 0) {
+    //   return null;
+    // } else if(speedEnchancer == 0)  { // the enchancer cannot be 0
+    //   return null;
+    // }
 
-    return currentSpeed * speedEnchancer;
+    // return currentSpeed * speedEnchancer;
   }
   
   /**

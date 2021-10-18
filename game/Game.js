@@ -470,10 +470,6 @@ class Game extends Phaser.Scene {
     }, 3000);
   }
 
-  unapplyIncreaseSpeedDebuff(CurrentGameSpeed) {
-    this.gameSpeed = CurrentGameSpeed;
-  }
-
   applyShrinkAvatarPowerUp() {
     this.cat.setScale(0.5);
 
