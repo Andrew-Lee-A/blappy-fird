@@ -86,13 +86,7 @@ class Game extends Phaser.Scene {
     // pipe speed according to player
     this.pipeGroup.setVelocityX(-this.gameSpeed);
     // setting score
-    this.timedEvent = this.time.addEvent({
-      delay: 1500,
-      callback: this.scoreIncrease,
-      callbackScope: this,
-      loop: true,
-      paused: false,
-    });
+    this.createTimedEventForScore();
     this.scoreText = this.add.text(0, 0);
     // add hearts
     this.heartsArray = this.initializeHearts(NUM_HEARTS, 30, 30);
@@ -410,7 +404,15 @@ class Game extends Phaser.Scene {
     this.pipePool[1].setImmovable(true);
     this.pipePool = [];
   }
-
+  createTimedEventForScore(){
+    this.timedEvent = this.time.addEvent({
+      delay: 1500,
+      callback: this.scoreIncrease,
+      callbackScope: this,
+      loop: true,
+      paused: false,
+    });
+  }
   getRightMostPipe() {
     let rightmostPipe = 0;
     this.pipeGroup.getChildren().forEach(function (pipe) {
