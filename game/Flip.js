@@ -6,6 +6,7 @@ class Flip extends Phaser.Scene {
       this.currentHeart = 3;
       this.score = 0;
       this.coinNum = 0;
+      this.TitleMsg = true;
     }
   
     preload() {
@@ -41,8 +42,8 @@ class Flip extends Phaser.Scene {
     }
     
     create() {
-        //create event announcement
         
+
       this.background = this.add.tileSprite(
         0,
         0,
@@ -213,6 +214,9 @@ class Flip extends Phaser.Scene {
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
         this.homeButton.setTint(0xffffff)
       })
+
+      //create event announcement
+        this.title = this.add.text(150, 100, 'Flip').setFontSize(70);
     }
   
     update() {
@@ -249,7 +253,19 @@ class Flip extends Phaser.Scene {
         }
       }, this);
   
-      
+      //show game type
+      if (this.TitleMsg = true){
+        this.timer = this.time.addEvent({
+          delay: 1500,
+          callback: () => {
+            this.TitleMsg = false;
+            this.killTitle(this.title);
+          },
+          loop: true
+        })
+      } 
+
+     
   
       // powerup collision
       this.physics.add.overlap(
@@ -285,7 +301,10 @@ class Flip extends Phaser.Scene {
         }
       }, this);
     }
-  
+
+    killTitle(title){
+      title.destroy();
+    }
     scoreIncrease() {
       this.score += 10;
       this.increaseCatSpeed();
