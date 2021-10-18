@@ -7,7 +7,7 @@ const config = {
   width: 600,
   height: 800,
   backgroundColor: "#6C3FDD",
-  scene: [MainMenu, ShopMenu, Game, GameOver, ScoreMenu, Settings, Gravity],
+  scene: [MainMenu, ShopMenu, Game, GameOver, ScoreMenu, Settings, Gravity, Flip],
   pixelArt: true,
   physics: {
     default: "arcade",
@@ -23,8 +23,8 @@ const gameOptions = {
   catGravity: 800,
   catFlapPower: 300,
   minPipeHeight: 50,
-  pipeDistance: [250, 300],
-  pipeHole: [150, 170],
+  pipeDistance: [300, 300],
+  pipeHole: [165, 165],
 };
 
 const game = new Phaser.Game(config);
