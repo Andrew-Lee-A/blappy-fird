@@ -459,17 +459,10 @@ class Flip extends Phaser.Scene {
 
   applyIncreaseSpeedDebuff() {
     this.currentGameSpeed = this.gameSpeed;
-    this.gameSpeed = this.currentGameSpeed * 1.4;
-    this.speedTime = this.time.delayedCall(
-      5000,
-      this.unapplyIncreaseSpeedDebuff,
-      [this.currentGameSpeed],
-      this
-    );
-  }
-
-  unapplyIncreaseSpeedDebuff(CurrentGameSpeed) {
-    this.gameSpeed = CurrentGameSpeed;
+    this.gameSpeed = this.gameController.getDebuffSpeed(this.currentGameSpeed, 1.4);
+    setTimeout(() => {
+      this.gameSpeed = this.currentGameSpeed;
+    }, 3000);
   }
 
   applyShrinkAvatarPowerUp() {
