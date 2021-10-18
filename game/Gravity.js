@@ -296,6 +296,7 @@ class Gravity extends Phaser.Scene {
     );
     this.powerUpGroup.setVelocityX(-this.gameSpeed);
   }
+  
   flap() {
     this.cat.body.velocity.y = gameOptions.catFlapPower;
   }
@@ -464,13 +465,10 @@ class Gravity extends Phaser.Scene {
 
   applyIncreaseSpeedDebuff() {
     this.currentGameSpeed = this.gameSpeed;
-    this.gameSpeed = this.currentGameSpeed * 1.4;
-    this.speedTime = this.time.delayedCall(
-      5000,
-      this.unapplyIncreaseSpeedDebuff,
-      [this.currentGameSpeed],
-      this
-    );
+    this.gameSpeed = this.gameController.getDebuffSpeed(this.currentGameSpeed, 1.4);
+    setTimeout(() => {
+      this.gameSpeed = this.currentGameSpeed;
+    }, 3000);
   }
 
   unapplyIncreaseSpeedDebuff(CurrentGameSpeed) {
@@ -589,7 +587,7 @@ class Gravity extends Phaser.Scene {
       });
   }
 
-  setMuteButtonInteractive() {
+  setMuteButtonInteractive(){
     let data = new DataStorage();
     this.muteButton
       .setInteractive()
