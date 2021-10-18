@@ -92,6 +92,11 @@ class DataStorage {
                     localStorage.setItem('gunScore', score)
                 }
                 break;
+            case'flip':
+                if (this.score._flipSCore < score) {
+                    this.score._flipSCore = score;
+                    localStorage.setItem('flipScore', score)
+                }
             default:
                 break;
         }

@@ -38,11 +38,11 @@ class GameOver extends Phaser.Scene {
         data.setCoin(coins);
         console.log("now coin:"+data.getCoin());
 
-        // update score
-        // gametype must be specify in single quotation
-        console.log("current score:"+data.getScore('classic'));
-        data.setScore('classic',score);
-        console.log("now score:"+data.getScore('classic'));
+        // // update score
+        // // gametype must be specify in single quotation
+        // console.log("current score:"+data.getScore('classic'));
+        // data.setScore('classic',score);
+        // console.log("now score:"+data.getScore('classic'));
 
 
 
