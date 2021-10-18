@@ -502,7 +502,7 @@ class Game extends Phaser.Scene {
   applyIncreaseSpeedDebuff(){
     this.currentGameSpeed = this.gameSpeed
     this.gameSpeed = this.currentGameSpeed * 1.4 
-    this.speedTime = this.time.delayedCall(10000, this.unapplyIncreaseSpeedDebuff, [this.currentGameSpeed], this);
+    this.speedTime = this.time.delayedCall(5000, this.unapplyIncreaseSpeedDebuff, [this.currentGameSpeed], this);
   }
 
   unapplyIncreaseSpeedDebuff(CurrentGameSpeed){
@@ -514,7 +514,7 @@ class Game extends Phaser.Scene {
 
     console.log("Shrink activated");
 
-    this.shrinkTime = this.time.delayedCall(10000, this.unapplyShrinkAvatarPowerUp, [], this);
+    this.shrinkTime = this.time.delayedCall(5000, this.unapplyShrinkAvatarPowerUp, [], this);
   }
 
   unapplyShrinkAvatarPowerUp(speed){
