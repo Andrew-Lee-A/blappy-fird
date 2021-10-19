@@ -8,9 +8,9 @@ SDP group project
 - Secondly, once you have VScode installed make sure to install the extension live server on VScode you can use this helpful video on how to install, and use Live Server https://www.youtube.com/watch?v=mGORIVStWWc
 - Now that you have everything installed everything that you need, open the landing-page.html file open when running live server on VScode (click go live while on the landing-page.html file) you should see the application working. Note that the software is only designed with the consideration of firefox and chrome so please refrain from using other browsers.
 - Finally, if you would like to run the test cases you will have to open the terminal in VScode and type the command npm install. This will install the jest dependency from there and now you can type npm test to run all the test cases (which uses jest).
-  Dependencies
 
 ---
+#Dependencies
 
 ## Live Server
 
