@@ -10,7 +10,7 @@ SDP group project
 - Finally, if you would like to run the test cases you will have to open the terminal in VScode and type the command npm install. This will install the jest dependency from there and now you can type npm test to run all the test cases (which uses jest).
 
 ---
-#Dependencies
+# Dependencies
 
 ## Live Server
 
