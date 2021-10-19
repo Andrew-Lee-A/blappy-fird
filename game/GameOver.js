@@ -6,6 +6,7 @@ class GameOver extends Phaser.Scene {
         this.title = {};
         this.title.scale = 1;
         this.title.scaleUp = true;
+        this.gameEvents = new Array("Game", "Gravity", "Flip");
     }
     
     preload() {
@@ -79,9 +80,10 @@ class GameOver extends Phaser.Scene {
 
             btn.on('pointerdown', () => {
                 this.scene.stop('GameOver');
+                const gameController = new GameController();
                 switch(i) {
                     case 0: {
-                        this.scene.start('Game');
+                        this.scene.start(gameController.selectGameEvent(this.gameEvents));
                         break;
                     }
                     case 1: {
